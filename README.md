@@ -18,7 +18,7 @@
 - BackEnd
   - Java 8
   - Spring & SpringBoot
-  - Gradle
+  - Maven
   - MyBatis
   - Swagger
 - FrontEnd
@@ -26,16 +26,13 @@
   - scss/css-module
   - Vuex
   - TypeScript
-- Server
-  - Docker
-  - AWS
-    - RDS
-    - S3
-    - EC2
-    - Cloud Front
+- AWS
+  - RDS
+  - S3
+  - EC
+  - Cloud Front
 - 형상 관리
   - GitHub
-
 
 <br>
 
