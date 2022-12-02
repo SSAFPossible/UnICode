@@ -39,25 +39,21 @@ public class NoticeBoardController {
 
 	@PostMapping()
 	// application.properties에서 해당 속성값 가져옴
-	public ResponseEntity<String> write(@Value("${file.path.upload-files}") String filePath, @RequestPart("noticeBoard") NoticeBoard noticeBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
-		System.out.println("noticeBoard!!!!! : " + noticeBoard.getTitle());
-		
-		
-		System.out.println("@@@@@@@@@@@@@");
+	public ResponseEntity<String> write(@Value("${file.path.upload-files}") String filePath, @Value("${file.path.upload-images}") String imagePath, @RequestPart(value="noticeBoard") NoticeBoard noticeBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 		logger.debug("write noticeBoard : {}", noticeBoard);
-		System.out.println("@@@ files : " + files);
+		
 		// FileUpload 관련 설정
 		logger.debug("MultipartFile.isEmpty : {}", files == null);
+		
 		if (files != null) {
-			System.out.println("@@@@@@@@@@@@@2");
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
 			String saveFolder = filePath + File.separator + today;
-			System.out.println("@@@ saveFolder : " + saveFolder);
-			logger.debug("저장 폴더 : {}", saveFolder);
+			
 			File folder = new File(saveFolder);
 			if (!folder.exists()) {
 				folder.mkdirs();
 			}
+			
 			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 			
 			for (MultipartFile mfile : files) {
@@ -76,17 +72,20 @@ public class NoticeBoardController {
 			noticeBoard.setFileList(fileInfos);
 		}
 		
+		
 		// ImageUpload 관련 설정
 		logger.debug("MultipartFile.isEmpty : {}", images == null);
+		
 		if (images != null) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = filePath + File.separator + today;
-			System.out.println("@@@ saveFolder - Image : " + saveFolder);
+			String saveFolder = imagePath + File.separator + today;
+			
 			logger.debug("저장 폴더 : {}", saveFolder);
 			File folder = new File(saveFolder);
 			if (!folder.exists()) {
 				folder.mkdirs();
 			}
+			
 			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 			
 			for (MultipartFile mfile : images) {

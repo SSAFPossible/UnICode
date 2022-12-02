@@ -17,7 +17,7 @@ import lombok.ToString;
 public class Board {
 	private int bid;
 	private String bcid;
-	private int uid;
+	private String uid;
 	private String title;
 	private String content;
 	private int hit;

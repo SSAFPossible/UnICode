@@ -8,6 +8,9 @@
 	<insert id="writeArticle" parameterType="board">
 		insert into board (uid, bcid, title, content, created_time, updated_time, hit) 
 		values(#{uid}, #{bcid}, #{title}, #{content}, now(), now(), 0)
+		<selectKey resultType="int" keyProperty="bid" order="AFTER">
+			select last_insert_id()
+		</selectKey>
 	</insert>
 	
 	<update id="modifyArticle" parameterType="board">
