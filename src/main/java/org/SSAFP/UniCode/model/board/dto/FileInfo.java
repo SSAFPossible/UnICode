@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class FileInfo {
 	private int fid;
 	private int bid;
+	private String type;
 	private String saveFolder;
 	private String originFile;
 	private String saveFile;

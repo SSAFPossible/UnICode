@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ExhibitBoard extends Board{
+public class ExhibitBoard extends Board {
 	private int like;			// 좋아요
 }

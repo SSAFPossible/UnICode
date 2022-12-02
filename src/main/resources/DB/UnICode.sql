@@ -38,6 +38,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
   `bid` INT NOT NULL AUTO_INCREMENT,
+  `bcid` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(1000) NULL,
   `created_time` TIMESTAMP NOT NULL,
@@ -53,8 +54,12 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
   CONSTRAINT `user_board_ID_WRITER`
     FOREIGN KEY (`uid`)
     REFERENCES `UnICode`.`user` (`uid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (`bcid`)
+    REFERENCES `UnICode`.`board_category` (`bcid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -101,8 +106,8 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`b_develop` (
   CONSTRAINT `LANGUAGE_DEVELOP_LID`
     FOREIGN KEY (`lid`)
     REFERENCES `UnICode`.`language` (`lid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -124,18 +129,18 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   CONSTRAINT `GROUP_NUM_CID`
     FOREIGN KEY (`parent_cid`)
     REFERENCES `UnICode`.`comment` (`cid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `board_COMMENT_BID`
     FOREIGN KEY (`bid`)
     REFERENCES `UnICode`.`board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `user_COMMENT_ID`
     FOREIGN KEY (`id`)
     REFERENCES `UnICode`.`user` (`uid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -143,15 +148,10 @@ ENGINE = InnoDB;
 -- Table `UnICode`.`board_category`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `UnICode`.`board_category` (
-  `bid` INT NOT NULL,
+  `bcid` VARCHAR(45) NOT NULL,
   `main_class` INT NULL,
   `middle_class` INT NULL,
-  PRIMARY KEY (`bid`),
-  CONSTRAINT `board_category_BID`
-    FOREIGN KEY (`bid`)
-    REFERENCES `UnICode`.`board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`bcid`))
 ENGINE = InnoDB;
 
 
@@ -167,13 +167,13 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`p_develop` (
   CONSTRAINT `project_DEVELOP_PID`
     FOREIGN KEY (`pid`)
     REFERENCES `UnICode`.`project` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `LANGUAGE_DEVELOP_LID0`
     FOREIGN KEY (`lid`)
     REFERENCES `UnICode`.`language` (`lid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -183,6 +183,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `UnICode`.`file_info` (
   `fid` INT NOT NULL AUTO_INCREMENT,
   `bid` INT NULL,
+  `type` VARCHAR(10) NULL,
   `save_folder` VARCHAR(45) NULL,
   `origin_file` VARCHAR(45) NULL,
   `save_file` VARCHAR(45) NULL,
@@ -191,8 +192,8 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`file_info` (
   CONSTRAINT `FILE_board_BID`
     FOREIGN KEY (`bid`)
     REFERENCES `UnICode`.`board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -208,13 +209,13 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project_member` (
   CONSTRAINT `fk_project_member_user1`
     FOREIGN KEY (`uid`)
     REFERENCES `UnICode`.`user` (`uid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_project_member_project1`
     FOREIGN KEY (`pid`)
     REFERENCES `UnICode`.`project` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 USE `UnICode` ;

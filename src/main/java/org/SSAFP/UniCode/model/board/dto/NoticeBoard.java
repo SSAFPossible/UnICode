@@ -1,6 +1,14 @@
 package org.SSAFP.UniCode.model.board.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Builder
-public class NoticeBoard extends Board{}
+@Data
+@ToString
+public class NoticeBoard extends Board {
+	
+	
+}

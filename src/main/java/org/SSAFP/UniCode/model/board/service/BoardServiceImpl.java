@@ -3,7 +3,6 @@ package org.SSAFP.UniCode.model.board.service;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
-import org.SSAFP.UniCode.model.board.dto.BoardCategory;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,11 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean writeArticle(Board board) throws Exception {
 		boolean write = boardRepo.writeArticle(board);
-		if(board.getFileList().size() != 0) {
+		if(write && board.getFileList().size() > 0) {
 			write = boardRepo.uploadFileList(board);
+		}
+		if (write && board.getImageList().size() > 0) {
+			write = boardRepo.uploadImageList(board);
 		}
 		return write;
 	}
@@ -28,7 +30,11 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public boolean modifyArticle(Board board) throws Exception {
-		return boardRepo.modifyArticle(board);
+		boolean modify = boardRepo.modifyArticle(board);
+		if(modify && board.getFileList().size() > 0) {
+			modify = boardRepo.deleteFileList(board) && boardRepo.uploadFileList(board) && boardRepo.uploadImageList(board);
+		}
+		return modify;
 	}
 
 	@Override
@@ -38,12 +44,13 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<Board> getAllArticle(BoardCategory boardCategory) throws Exception {
-		return boardRepo.getAllArticle(boardCategory);
+	public List<Board> getAllArticle(String bcid) throws Exception {
+		return boardRepo.getAllArticle(bcid);
 	}
 
 	@Override
 	public Board getArticle(int bid) throws Exception {
+		boardRepo.updateHit(bid);
 		return boardRepo.getArticle(bid);
 	}
 
