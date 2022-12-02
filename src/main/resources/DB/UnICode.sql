@@ -15,9 +15,9 @@ CREATE SCHEMA IF NOT EXISTS `UnICode` DEFAULT CHARACTER SET utf8 ;
 USE `UnICode` ;
 
 -- -----------------------------------------------------
--- Table `UnICode`.`User`
+-- Table `UnICode`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`User` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`user` (
   `uid` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NULL,
   `name` VARCHAR(45) NULL,
@@ -34,9 +34,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `UnICode`.`Board`
+-- Table `UnICode`.`board`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`Board` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
   `bid` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(1000) NULL,
@@ -49,19 +49,19 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`Board` (
   `open` TINYINT NULL,
   `max_member` INT NULL,
   PRIMARY KEY (`bid`),
-  INDEX `USER_BOARD_id_wirtre_idx` (`uid` ASC) VISIBLE,
-  CONSTRAINT `USER_BOARD_ID_WRITER`
+  INDEX `user_board_id_wirtre_idx` (`uid` ASC) VISIBLE,
+  CONSTRAINT `user_board_ID_WRITER`
     FOREIGN KEY (`uid`)
-    REFERENCES `UnICode`.`User` (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `UnICode`.`Project`
+-- Table `UnICode`.`project`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`Project` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`project` (
   `pid` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(1000) NULL,
@@ -86,16 +86,16 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `UnICode`.`B_Develop`
+-- Table `UnICode`.`b_develop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`B_Develop` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`b_develop` (
   `bid` INT NOT NULL,
   `lid` INT NOT NULL,
   PRIMARY KEY (`bid`, `lid`),
   INDEX `LANGUAGE_DEVELOP_LID_idx` (`lid` ASC) VISIBLE,
-  CONSTRAINT `BOARD_DEVELOP_BID`
+  CONSTRAINT `board_DEVELOP_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `UnICode`.`Board` (`bid`)
+    REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `LANGUAGE_DEVELOP_LID`
@@ -119,54 +119,54 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   `id` VARCHAR(45) NULL,
   PRIMARY KEY (`cid`),
   INDEX `GROUP_NUM_CID_idx` (`parent_cid` ASC) VISIBLE,
-  INDEX `BOARD_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
-  INDEX `USER_COMMENT_ID_idx` (`id` ASC) VISIBLE,
+  INDEX `board_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
+  INDEX `user_COMMENT_ID_idx` (`id` ASC) VISIBLE,
   CONSTRAINT `GROUP_NUM_CID`
     FOREIGN KEY (`parent_cid`)
     REFERENCES `UnICode`.`comment` (`cid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `BOARD_COMMENT_BID`
+  CONSTRAINT `board_COMMENT_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `UnICode`.`Board` (`bid`)
+    REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `USER_COMMENT_ID`
+  CONSTRAINT `user_COMMENT_ID`
     FOREIGN KEY (`id`)
-    REFERENCES `UnICode`.`User` (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `UnICode`.`Board_Category`
+-- Table `UnICode`.`board_category`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`Board_Category` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`board_category` (
   `bid` INT NOT NULL,
   `main_class` INT NULL,
   `middle_class` INT NULL,
   PRIMARY KEY (`bid`),
-  CONSTRAINT `BOARD_CATEGORY_BID`
+  CONSTRAINT `board_category_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `UnICode`.`Board` (`bid`)
+    REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `UnICode`.`P_Develop`
+-- Table `UnICode`.`p_develop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`P_Develop` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`p_develop` (
   `pid` INT NOT NULL,
   `lid` INT NOT NULL,
   PRIMARY KEY (`lid`, `pid`),
   INDEX `LANGUAGE_DEVELOP_LID_idx` (`lid` ASC) VISIBLE,
-  INDEX `PROJECT_DEVELOP_PID_idx` (`pid` ASC) VISIBLE,
-  CONSTRAINT `PROJECT_DEVELOP_PID`
+  INDEX `project_DEVELOP_PID_idx` (`pid` ASC) VISIBLE,
+  CONSTRAINT `project_DEVELOP_PID`
     FOREIGN KEY (`pid`)
-    REFERENCES `UnICode`.`Project` (`pid`)
+    REFERENCES `UnICode`.`project` (`pid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `LANGUAGE_DEVELOP_LID0`
@@ -187,32 +187,32 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`file_info` (
   `origin_file` VARCHAR(45) NULL,
   `save_file` VARCHAR(45) NULL,
   PRIMARY KEY (`fid`),
-  INDEX `FILE_BOARD_BID_idx` (`bid` ASC) VISIBLE,
-  CONSTRAINT `FILE_BOARD_BID`
+  INDEX `FILE_board_BID_idx` (`bid` ASC) VISIBLE,
+  CONSTRAINT `FILE_board_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `UnICode`.`Board` (`bid`)
+    REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `UnICode`.`ProjectMember`
+-- Table `UnICode`.`project_member`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`ProjectMember` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`project_member` (
   `uid` VARCHAR(45) NOT NULL,
   `pid` INT NOT NULL,
   PRIMARY KEY (`uid`, `pid`),
-  INDEX `fk_ProjectMember_User1_idx` (`uid` ASC) VISIBLE,
-  INDEX `fk_ProjectMember_Project1_idx` (`pid` ASC) VISIBLE,
-  CONSTRAINT `fk_ProjectMember_User1`
+  INDEX `fk_project_member_user1_idx` (`uid` ASC) VISIBLE,
+  INDEX `fk_project_member_project1_idx` (`pid` ASC) VISIBLE,
+  CONSTRAINT `fk_project_member_user1`
     FOREIGN KEY (`uid`)
-    REFERENCES `UnICode`.`User` (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ProjectMember_Project1`
+  CONSTRAINT `fk_project_member_project1`
     FOREIGN KEY (`pid`)
-    REFERENCES `UnICode`.`Project` (`pid`)
+    REFERENCES `UnICode`.`project` (`pid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
