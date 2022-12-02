@@ -1,6 +1,7 @@
 package org.SSAFP.UniCode.model.board.dto;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -13,4 +14,5 @@ public class Board {
 	private int hit;
 	private Date createdTime;
 	private Date updatedTime;
+	private List<FileInfo> fileList;
 }

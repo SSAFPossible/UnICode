@@ -1,5 +1,10 @@
 package org.SSAFP.UniCode.model.board.service;
 
-public class StudyBoardServiceImpl implements BoardService {
+import java.util.List;
+
+import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.BoardCategory;
+
+public class StudyBoardServiceImpl extends BoardServiceImpl {
 
 }
