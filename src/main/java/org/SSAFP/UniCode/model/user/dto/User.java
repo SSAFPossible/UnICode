@@ -18,6 +18,8 @@ public class User {
 	private String accessImg;
 	private String email;
 	private String github;
+	private String authToken;
+	private String refreashTokens;
 	private boolean access;
 	private boolean authority;
 	private int score;
