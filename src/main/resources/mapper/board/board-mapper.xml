@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.BoardRepo">
+	
+	<insert id="writeArticle" parameterType="board">
+		insert into board (uid, bcid, title, content, created_time, updated_time, hit) 
+		values(#{uid}, #{bcid}, #{title}, #{content}, now(), now(), 0)
+	</insert>
+	
+	<update id="modifyArticle" parameterType="board">
+		update board
+		<set>
+			<if test = "bcid != null">
+				bcid = #{bcid},
+			</if>
+			<if test = "title != null">
+				title = #{title},
+			</if>
+			<if test = "content != null">
+				content = #{content},
+			</if>
+			updated_time = now()
+		</set>
+		where bid = #{bid}
+	</update>
+	
+	<select id="getAllArticle" parameterType="string" resultMap="baseBoardMap">
+		select * from board
+		where bcid = #{bcid}
+	</select>
+	
+	<select id="getArticle" parameterType="int" resultMap="baseBoardFileMap">
+		select * from board
+		where bid = #{bid}
+	</select>
+	
+	<delete id="deleteArticle" parameterType="int">
+		delete from board
+		where bid = #{bid}
+	</delete>
+	
+	<insert id="uploadFileList" parameterType="board">
+		insert into file_info (bid, type, save_folder, origin_file, save_file)
+		values
+		<foreach collection="fileList" item="file" separator=" , ">
+			(#{bid}, "file", #{file.saveFolder}, #{file.originFile}, #{file.saveFile})
+		</foreach>
+	</insert>
+	
+	<insert id="uploadImageList" parameterType="board">
+		insert into file_info (bid, type, save_folder, origin_file, save_file)
+		values
+		<foreach collection="imageList" item="file" separator=",">
+			(#{bid}, "image", #{file.saveFolder}, #{file.originFile}, #{file.saveFile})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteFileList" parameterType="board">
+		delete from file_info
+		where bid = #{bid}
+	</delete>
+	
+	<select id="fileInfoList" resultMap="baseFileInfoMap">
+		select * from file_info
+		where bid = #{bid}
+	</select>
+	
+	<update id="updateHit" parameterType="int">
+		update board
+		set hit = hit + 1
+		where bid = #{bid}
+	</update>
+	
+	<resultMap type="board" id="baseBoardMap">
+		<id column="bid" property="bid"/>
+		<result column="uid" property="uid"/>
+		<result column="bcid" property="bcid"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="created_time" property="createdTime"/>
+		<result column="updated_time" property="updatedTime"/>
+	</resultMap>
+	
+	<resultMap type="board" id="baseBoardFileMap" extends="baseBoardMap">
+		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileInfoList"/>
+		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="fileInfoList"/>
+	</resultMap>
+	
+	<resultMap type="fileInfo" id="baseFileInfoMap">
+		<id column="fid" property="fid"/>
+		<result column="bid" property="bid"/>
+		<result column="type" property="type"/>
+		<result column="save_folder" property="saveFolder"/>
+		<result column="origin_file" property="originFile"/>
+		<result column="save_file" property="saveFile"/>
+	</resultMap>
+	
+</mapper>
