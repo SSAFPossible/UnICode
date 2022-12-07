@@ -18,8 +18,6 @@
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
-		<!-- 로그 -->
-
 		<!-- 로그인을 위한 토큰. -->
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 		<dependency>
@@ -35,6 +33,13 @@
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
 
+		<!-- File Upload -->
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
