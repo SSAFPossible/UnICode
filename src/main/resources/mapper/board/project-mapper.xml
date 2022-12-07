@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.ProjectRepo">
+	
+	<insert id="registProject" parameterType="project">
+		insert into project (bid, url) 
+		values(#{bid}, #{url})
+		<selectKey resultType="int" keyProperty="pid" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<select id="getMainImg" parameterType="int" resultMap="baseImgMap">
+		select * from project_img
+		from pid = #{pid}
+	</select>
+	
+ 	<insert id="uploadMainImg" parameterType="project">
+		insert into project_img (pid, save_folder, origin_file, save_file)
+		values (#{pid}, #{mainImg.saveFolder}, #{mainImg.originFile}, #{mainImg.saveFile})
+	</insert>
+	
+	<select id="mainImg" resultMap="baseImgMap">
+		select * from project_img
+		where pid = #{pid}
+	</select>
+	
+	<resultMap type="project" id="baseProjectMap">
+		<id column="pid" property="pid"/>
+		<result column="bid" property="bid"/>
+		<result column="url" property="url"/>
+	</resultMap>
+	
+	<resultMap type="project" id="baseProjectImgMap" extends="baseProjectMap">
+		<association property="mainImg" column="pid" javaType="projectImg" select="mainImg"/>
+	</resultMap>
+	
+	<resultMap type="projectImg" id="baseImgMap">
+		<id column="piid" property="piid"/>
+		<result column="pid" property="pid"/>
+		<result column="save_folder" property="saveFolder"/>
+		<result column="origin_file" property="originFile"/>
+		<result column="save_file" property="saveFile"/>
+	</resultMap>
+	
+</mapper>
