@@ -7,8 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @ToString
-public class NoticeBoard extends Board {
-	
-	
+public class Project {
+	private int pid;
+	private int bid;
+	private String url;
+	private ProjectImg mainImg;
 }

@@ -3,17 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.SSAFP.UniCode.model.board.repo.BoardRepo">
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.ExhibitBoardRepo">
 	
-	<insert id="writeArticle" parameterType="board">
-		insert into board (uid, bcid, title, content, created_time, updated_time, hit) 
-		values(#{uid}, #{bcid}, #{title}, #{content}, now(), now(), 0)
+	<insert id="writeArticle" parameterType="exhibitBoard">
+		insert into board (uid, bcid, title, content, created_time, updated_time, hit, like_cnt) 
+		values(#{uid}, #{bcid}, #{title}, #{content}, now(), now(), 0, 0)
 		<selectKey resultType="int" keyProperty="bid" order="AFTER">
 			select last_insert_id()
 		</selectKey>
 	</insert>
 	
-	<update id="modifyArticle" parameterType="board">
+<!-- 	<update id="modifyArticle" parameterType="board">
 		update board
 		<set>
 			<if test = "bcid != null">
@@ -28,14 +28,18 @@
 			updated_time = now()
 		</set>
 		where bid = #{bid}
-	</update>
+	</update> -->
 	
-	<select id="getAllArticle" parameterType="string" resultMap="baseBoardMap">
+	<!-- dddddddddddddddddddddddddddddddddddddddddddddd
+	d
+	d -->
+	
+<!-- 	<select id="getAllArticle" parameterType="string" resultMap="baseExhibitBoardMap">
 		select * from board
 		where bcid = #{bcid}
 	</select>
 	
-	<select id="getArticle" parameterType="int" resultMap="baseBoardFileMap">
+	<select id="getArticle" parameterType="int" resultMap="baseExhibitBoardMap">
 		select * from board
 		where bid = #{bid}
 	</select>
@@ -43,9 +47,9 @@
 	<delete id="deleteArticle" parameterType="int">
 		delete from board
 		where bid = #{bid}
-	</delete>
+	</delete> -->
 	
-	<insert id="uploadFileList" parameterType="board">
+	<insert id="uploadFileList" parameterType="exhibitBoard">
 		insert into file_info (bid, type, save_folder, origin_file, save_file)
 		values
 		<foreach collection="fileList" item="file" separator=" , ">
@@ -53,15 +57,15 @@
 		</foreach>
 	</insert>
 	
-	<insert id="uploadImageList" parameterType="board">
+	<insert id="uploadImageList" parameterType="exhibitBoard">
 		insert into file_info (bid, type, save_folder, origin_file, save_file)
 		values
 		<foreach collection="imageList" item="file" separator=",">
 			(#{bid}, "image", #{file.saveFolder}, #{file.originFile}, #{file.saveFile})
 		</foreach>
 	</insert>
-	
-	<delete id="deleteFileList" parameterType="board">
+
+ 	<delete id="deleteFileList" parameterType="exhibitBoard">
 		delete from file_info
 		where bid = #{bid}
 	</delete>
@@ -81,24 +85,25 @@
 		where type="image" and bid = #{bid}
 	</select>
 	
-	<update id="updateHit" parameterType="int">
+<!-- 	<update id="updateHit" parameterType="int">
 		update board
 		set hit = hit + 1
 		where bid = #{bid}
-	</update>
+	</update> -->
 	
-	<resultMap type="board" id="baseBoardMap">
+	<resultMap type="exhibitBoard" id="baseExhibitBoardMap">
 		<id column="bid" property="bid"/>
 		<result column="uid" property="uid"/>
 		<result column="bcid" property="bcid"/>
 		<result column="title" property="title"/>
 		<result column="content" property="content"/>
 		<result column="hit" property="hit"/>
+		<result column="like" property="like"/>
 		<result column="created_time" property="createdTime"/>
 		<result column="updated_time" property="updatedTime"/>
 	</resultMap>
 	
-	<resultMap type="board" id="baseBoardFileMap" extends="baseBoardMap">
+	<resultMap type="exhibitBoard" id="baseExhibitBoardFileMap" extends="baseExhibitBoardMap">
 		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
 		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
 	</resultMap>

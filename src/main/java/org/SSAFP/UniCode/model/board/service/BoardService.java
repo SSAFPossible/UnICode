@@ -17,4 +17,6 @@ public interface BoardService {
 	public List<Board> getAllArticle(String bcid) throws Exception;
 	
 	public Board getArticle(int bid) throws Exception;
+
+	public boolean deleteFileList(int bid, String filePath, String imagePath) throws Exception;
 }
