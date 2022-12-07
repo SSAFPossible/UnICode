@@ -1,5 +1,5 @@
 package org.SSAFP.UniCode.model.board.service;
 
-public class ExhibitBoardServiceImpl implements BoardService {
+public class ExhibitBoardServiceImpl extends BoardServiceImpl {
 
 }

@@ -1,8 +1,10 @@
 package org.SSAFP.UniCode.model.board.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,4 +56,24 @@ public class BoardServiceImpl implements BoardService {
 		return boardRepo.getArticle(bid);
 	}
 
+	@Override
+	@Transactional
+	// 실제 파일 삭제 메소드
+	public boolean deleteFileList(int bid, String filePath, String imagePath) throws Exception {
+		List<FileInfo> fileInfoList = boardRepo.getFileList(bid);
+		try {
+			for(FileInfo fileInfo: fileInfoList) {
+				File file = new File(filePath + File.separator + fileInfo.getSaveFolder() + File.separator + fileInfo.getSaveFile());
+				if(!file.delete()) {
+					file = new File(imagePath + File.separator + fileInfo.getSaveFolder() + File.separator + fileInfo.getSaveFile());
+					file.delete();
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 }
+

@@ -8,6 +8,9 @@
 	<insert id="writeArticle" parameterType="board">
 		insert into board (uid, bcid, title, content, created_time, updated_time, hit) 
 		values(#{uid}, #{bcid}, #{title}, #{content}, now(), now(), 0)
+		<selectKey resultType="int" keyProperty="bid" order="AFTER">
+			select last_insert_id()
+		</selectKey>
 	</insert>
 	
 	<update id="modifyArticle" parameterType="board">
@@ -63,9 +66,19 @@
 		where bid = #{bid}
 	</delete>
 	
-	<select id="fileInfoList" resultMap="baseFileInfoMap">
+	<select id="getFileList" parameterType="int" resultMap="baseFileInfoMap">
 		select * from file_info
 		where bid = #{bid}
+	</select>
+	
+	<select id="fileList" resultMap="baseFileInfoMap">
+		select * from file_info
+		where type="file" and bid = #{bid}
+	</select>
+	
+	<select id="imageList" resultMap="baseFileInfoMap">
+		select * from file_info
+		where type="image" and bid = #{bid}
 	</select>
 	
 	<update id="updateHit" parameterType="int">
@@ -86,8 +99,8 @@
 	</resultMap>
 	
 	<resultMap type="board" id="baseBoardFileMap" extends="baseBoardMap">
-		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileInfoList"/>
-		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="fileInfoList"/>
+		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
+		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
 	</resultMap>
 	
 	<resultMap type="fileInfo" id="baseFileInfoMap">
