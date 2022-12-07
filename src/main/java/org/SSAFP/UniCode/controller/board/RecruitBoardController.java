@@ -8,11 +8,13 @@ import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
+import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.service.BoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.RecruitBoardServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +38,8 @@ public class RecruitBoardController {
 	private static final Logger logger = LoggerFactory.getLogger(RecruitBoardController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
-
+	
 	@Autowired
-	private BoardServiceImpl boardService; // 게시판 공통 기능 Service
 	private RecruitBoardServiceImpl recruitBoardService; // 인원 모집 게시판 기능 Service
 
 	@Value("${file.path.upload-files}")
@@ -48,7 +49,7 @@ public class RecruitBoardController {
 	String imagePath;
 	
 	@PostMapping()
-	public ResponseEntity<String> write(@RequestPart(value="recruitBoard") Board recruitBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+	public ResponseEntity<String> write(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 		// 파일 업로드
 		if (files != null) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -102,7 +103,7 @@ public class RecruitBoardController {
 			recruitBoard.setImageList(fileInfos);
 		}
 		
-		if(boardService.writeArticle(recruitBoard)) {
+		if(recruitBoardService.writeArticle(recruitBoard) && recruitBoardService.modifyRecruitInfo(recruitBoard)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
@@ -111,16 +112,16 @@ public class RecruitBoardController {
 	
 	@GetMapping
 	public ResponseEntity<List<Board>> getAllArticle() throws Exception{
-		return new ResponseEntity<List<Board>>(boardService.getAllArticle("notice"), HttpStatus.OK);
+		return new ResponseEntity<List<Board>>(recruitBoardService.getAllArticle("recruit"), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{bid}")
 	public ResponseEntity<Board> getArticle(@PathVariable("bid") int bid) throws Exception{
-		return new ResponseEntity<Board>(boardService.getArticle(bid), HttpStatus.OK);
+		return new ResponseEntity<Board>(recruitBoardService.getArticle(bid), HttpStatus.OK);
 	}
 	
 	@PutMapping
-	public ResponseEntity<String> modify(@RequestPart(value = "recruitBoard") Board recruitBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception{
+	public ResponseEntity<String> modify(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception{
 		// 새로운 파일 업로드
 		if (files != null) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -175,7 +176,7 @@ public class RecruitBoardController {
 		}
 		
 		// 기존 파일 삭제 & article 수정
-		if(boardService.deleteFileList(recruitBoard.getBid(), filePath, imagePath) && boardService.modifyArticle(recruitBoard)) {
+		if(recruitBoardService.deleteFileList(recruitBoard.getBid(), filePath, imagePath) && recruitBoardService.modifyArticle(recruitBoard) && recruitBoardService.modifyRecruitInfo(recruitBoard)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
@@ -185,7 +186,7 @@ public class RecruitBoardController {
 	@DeleteMapping("/{bid}")
 	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
 		// 기존 파일 삭제 & article 삭제
-		if(boardService.deleteFileList(bid, filePath, imagePath) && boardService.deleteArticle(bid)) {
+		if(recruitBoardService.deleteFileList(bid, filePath, imagePath) && recruitBoardService.deleteArticle(bid)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
