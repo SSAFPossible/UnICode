@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
   `created_time` TIMESTAMP NOT NULL,
   `updated_time` TIMESTAMP NULL,
   `uid` VARCHAR(45) NOT NULL,
-  `main_img_url` VARCHAR(100) NULL,
   `hit` INT NULL DEFAULT 0,
   `like` INT NULL DEFAULT 0,
   `open` TINYINT NULL,
@@ -74,9 +73,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project` (
   `created_time` TIMESTAMP NOT NULL,
   `updated_time` TIMESTAMP NULL,
   `url` VARCHAR(45) NULL,
-  `hit` INT NULL DEFAULT 0,
-  `like` INT NULL DEFAULT 0,
-  `main_img_url` VARCHAR(45) NULL,
+  `main_img` VARCHAR(45) NULL,
   PRIMARY KEY (`pid`),
   FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE CASCADE
