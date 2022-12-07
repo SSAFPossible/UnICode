@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.RecruitBoardRepo">
+
+	<resultMap type="recruitBoard" id="baseRecruitBoardMap">
+		<id column="bid" property="bid"/>
+		<result column="uid" property="uid"/>
+		<result column="bcid" property="bcid"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="created_time" property="createdTime"/>
+		<result column="updated_time" property="updatedTime"/>
+		<result column="open" property="open" />
+		<result column="max_member" property="maxMember" />
+		<result column="like" property="like" />
+	</resultMap>
+</mapper>
