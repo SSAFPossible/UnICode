@@ -68,6 +68,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `UnICode`.`project` (
   `pid` INT NOT NULL AUTO_INCREMENT,
+  `bid` INT NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(1000) NULL,
   `created_time` TIMESTAMP NOT NULL,
@@ -75,8 +76,11 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project` (
   `url` VARCHAR(45) NULL,
   `hit` INT NULL DEFAULT 0,
   `like` INT NULL DEFAULT 0,
-  `img` VARCHAR(45) NULL,
-  PRIMARY KEY (`pid`))
+  `main_img_url` VARCHAR(45) NULL,
+  PRIMARY KEY (`pid`),
+  FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
