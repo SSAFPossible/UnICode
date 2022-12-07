@@ -6,24 +6,45 @@
 <mapper
 	namespace="org.SSAFP.UniCode.model.board.repo.StudyBoardRepo">
 
-	<resultMap type="studyBoard" id="baseStudyBoardMap">
-		<id column="bid" property="bid"/>
-		<result column="title" property="title"/>
-		<result column="content" property="content"/>
-		<result column="created_time" property="createdTime"/>
-		<result column="updated_time" property="updatedTime"/>
-		<result column="uid" property="uid"/>
-		<result column="hit" property="hit"/>
-		<result column="like" property="like"/>
-		<result column="bcid" property="bcid"/>
-	</resultMap>
-	
-	
-	<select id="getAllBoardArticle" resultMap="baseStudyBoardMap">
+
+	<select id="getAllStudyBoard"
+		parameterType="studyBoardParam" resultType="studyBoard">
 		select * from board
-		where bcid regexp 'algo|job|cs'
+		<if test="category=='' and tag==''">
+			where bcid regexp 'algo|job|cs'
+		</if>
+
+		<if test="category!='' and tag==''">
+			where bcid like concat(#{category},"%")
+		</if>
+
+		<if test="category=='' and tag!=''">
+			where bcid like concat("%","_",#{tag})
+		</if>
+
+		<if test="category!='' and tag!=''">
+			where bcid like concat(#{category},"_",#{tag})
+		</if>
+		<if test="uid!=''">
+			and uid=#{uid}
+		</if>
+		<if test="sortLike==true">
+			order by `like` desc
+		</if>
+		<if test="sortLike!=true">
+			order by created_time
+		</if>
 	</select>
 
+	<update id="increaseLike" parameterType="int">
+		update board set
+		`like` = `like` + 1 where bid=#{bid}
+	</update>
+
+	<select id="getStudyBoard" parameterType="int"
+		resultType="studyBoard">
+		select * from board where bid=#{bid}
+	</select>
 
 </mapper>
 
