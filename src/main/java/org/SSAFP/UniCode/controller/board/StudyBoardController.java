@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
@@ -123,6 +124,31 @@ public class StudyBoardController {
 	// - sortLike : 좋아요 순 정렬 여부 true : 좋아요 순 정렬 / false : created_time정렬 
 	@GetMapping
 	public ResponseEntity<List<StudyBoard>> getAllStudyBoard(@RequestBody StudyBoardParam studyBoardParam) throws Exception {
+		
+		List<String> categoryTag = new LinkedList<String>();
+		if(studyBoardParam.getCategory().size()>0){
+			for (String category : studyBoardParam.getCategory()) {
+				if(studyBoardParam.getTag().size()>0) {
+					for (String tag : studyBoardParam.getTag()) {
+						categoryTag.add(category+"_"+tag);
+					}
+				}
+				else {
+					categoryTag.add(category+"_info");
+					categoryTag.add(category+"_ques");
+				}
+			}
+		}else if(studyBoardParam.getTag().size()>0){
+			for (String tag : studyBoardParam.getTag()) {
+				categoryTag.add("cs_"+tag);
+				categoryTag.add("algo_"+tag);
+				categoryTag.add("job_"+tag);
+			}
+		}
+		studyBoardParam.setCategorySize(studyBoardParam.getCategory().size());
+		studyBoardParam.setTagSize(studyBoardParam.getTag().size());
+		
+		studyBoardParam.setCategoryTag(categoryTag);
 		return new ResponseEntity<List<StudyBoard>>(studyBoardService.getAllStudyBoard(studyBoardParam), HttpStatus.OK);
 	}
 	

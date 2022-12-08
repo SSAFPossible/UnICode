@@ -6,25 +6,21 @@
 <mapper
 	namespace="org.SSAFP.UniCode.model.board.repo.StudyBoardRepo">
 
-
-	<select id="getAllStudyBoard"
-		parameterType="studyBoardParam" resultType="studyBoard">
-		select * from board
-		<if test="category=='' and tag==''">
-			where bcid regexp 'algo|job|cs'
+	<select id="getAllStudyBoard" parameterType="studyBoardParam"
+		resultType="studyBoard">
+		select * from board where
+		<if test="categorySize==0 and tagSize==0">
+			bcid regexp 'algo|job|cs'
 		</if>
 
-		<if test="category!='' and tag==''">
-			where bcid like concat(#{category},"%")
+		<if test="categorySize!=0 or tagSize!=0">
+			bcid in
+			<foreach item="ct" collection="categoryTag" open="(" close=")"
+				separator=",">
+				#{ct}
+			</foreach>
 		</if>
 
-		<if test="category=='' and tag!=''">
-			where bcid like concat("%","_",#{tag})
-		</if>
-
-		<if test="category!='' and tag!=''">
-			where bcid like concat(#{category},"_",#{tag})
-		</if>
 		<if test="uid!=''">
 			and uid=#{uid}
 		</if>
@@ -38,7 +34,8 @@
 
 	<update id="increaseLike" parameterType="int">
 		update board set
-		`like` = `like` + 1 where bid=#{bid}
+		`like` =
+		`like` + 1 where bid=#{bid}
 	</update>
 
 	<select id="getStudyBoard" parameterType="int"
