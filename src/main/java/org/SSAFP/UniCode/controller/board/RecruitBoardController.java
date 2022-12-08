@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
+import org.SSAFP.UniCode.model.board.dto.Language;
 import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.service.BoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.RecruitBoardServiceImpl;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -110,14 +112,15 @@ public class RecruitBoardController {
 		}
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<Board>> getAllArticle() throws Exception{
-		return new ResponseEntity<List<Board>>(recruitBoardService.getAllArticle("recruit"), HttpStatus.OK);
+	@GetMapping("/{bid}")
+	public ResponseEntity<RecruitBoard> getRecruitArticle(@PathVariable("bid") int bid) throws Exception{
+		return new ResponseEntity<RecruitBoard>(recruitBoardService.getRecruitArticle(bid), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{bid}")
-	public ResponseEntity<Board> getArticle(@PathVariable("bid") int bid) throws Exception{
-		return new ResponseEntity<Board>(recruitBoardService.getArticle(bid), HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<List<RecruitBoard>> getRecruitAllArticle(@RequestBody Language language) throws Exception{
+		language.setNameSize(language.getName().size());
+		return new ResponseEntity<List<RecruitBoard>>(recruitBoardService.getRecruitAllArticle(language), HttpStatus.OK);
 	}
 	
 	@PutMapping
