@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
   `updated_time` TIMESTAMP NULL,
   `uid` VARCHAR(45) NOT NULL,
   `hit` INT NULL DEFAULT 0,
-  `like` INT NULL DEFAULT 0,
+  `like_cnt` INT NULL DEFAULT 0,
   `open` TINYINT NULL,
   `max_member` INT NULL,
   PRIMARY KEY (`bid`),
@@ -68,12 +68,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `UnICode`.`project` (
   `pid` INT NOT NULL AUTO_INCREMENT,
   `bid` INT NOT NULL,
-  `title` VARCHAR(45) NOT NULL,
-  `content` VARCHAR(1000) NULL,
-  `created_time` TIMESTAMP NOT NULL,
-  `updated_time` TIMESTAMP NULL,
   `url` VARCHAR(45) NULL,
-  `main_img` VARCHAR(45) NULL,
   PRIMARY KEY (`pid`),
   FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE CASCADE
@@ -197,6 +192,22 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`file_info` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`file_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`project_img` (
+  `piid` INT NOT NULL AUTO_INCREMENT,
+  `pid` INT NULL,
+  `save_folder` VARCHAR(45) NULL,
+  `origin_file` VARCHAR(45) NULL,
+  `save_file` VARCHAR(45) NULL,
+  PRIMARY KEY (`piid`),
+    FOREIGN KEY (`pid`)
+    REFERENCES `UnICode`.`project` (`pid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `UnICode`.`project_member`

@@ -1,13 +1,19 @@
 package org.SSAFP.UniCode.model.board.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExhibitBoard extends Board {
-	private int like_cnt;				// 좋아요
-	private Project project;			// 프로젝트
+@Builder
+@ToString
+public class Project {
+	private int pid;
+	private int bid;
+	private String url;
+	private ProjectImg mainImg;
 }
