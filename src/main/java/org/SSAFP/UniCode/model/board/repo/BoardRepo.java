@@ -5,6 +5,7 @@ import java.util.List;
 import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.context.annotation.Primary;
 
 @Mapper
 public interface BoardRepo {

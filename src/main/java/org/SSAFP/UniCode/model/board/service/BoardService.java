@@ -6,6 +6,7 @@ import org.SSAFP.UniCode.model.board.dto.Board;
 import org.springframework.stereotype.Service;
 
 @Service
+
 public interface BoardService {
 	
 	public boolean writeArticle(Board board) throws Exception;
@@ -19,4 +20,5 @@ public interface BoardService {
 	public Board getArticle(int bid) throws Exception;
 
 	public boolean deleteFileList(int bid, String filePath, String imagePath) throws Exception;
+
 }

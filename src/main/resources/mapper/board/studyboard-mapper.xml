@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="org.SSAFP.UniCode.model.board.repo.StudyBoardRepo">
+
+	<select id="getAllStudyBoard" parameterType="studyBoardParam"
+		resultType="studyBoard">
+		select * from board where
+		<if test="categorySize==0 and tagSize==0">
+			bcid regexp 'algo|job|cs'
+		</if>
+
+		<if test="categorySize!=0 or tagSize!=0">
+			bcid in
+			<foreach item="ct" collection="categoryTag" open="(" close=")"
+				separator=",">
+				#{ct}
+			</foreach>
+		</if>
+
+		<if test="uid!=''">
+			and uid=#{uid}
+		</if>
+		<if test="sortLike==true">
+			order by `like` desc
+		</if>
+		<if test="sortLike!=true">
+			order by created_time
+		</if>
+	</select>
+
+	<update id="increaseLike" parameterType="int">
+		update board set
+		`like` =
+		`like` + 1 where bid=#{bid}
+	</update>
+
+	<select id="getStudyBoard" parameterType="int"
+		resultType="studyBoard">
+		select * from board where bid=#{bid}
+	</select>
+
+</mapper>
+
+
+	
