@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
+import org.SSAFP.UniCode.model.board.dto.Language;
 import org.SSAFP.UniCode.model.board.dto.ProjectImg;
+import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.service.ExhibitBoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.ProjectServiceImpl;
 import org.slf4j.Logger;
@@ -17,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,7 +76,7 @@ public class ExhibitBoardController {
 		}
 		
 		// 파일 업로드
-		if (files != null) {
+		if (!files[0].getOriginalFilename().equals("")) {
 			String saveFolder = filePath + File.separator + today;
 			
 			File folder = new File(saveFolder);
@@ -97,7 +101,7 @@ public class ExhibitBoardController {
 		}
 		
 		// 이미지 업로드
-		if (images != null) {
+		if (!images[0].getOriginalFilename().equals("")) {
 			String saveFolder = imagePath + File.separator + today;
 			
 			File folder = new File(saveFolder);
@@ -167,7 +171,7 @@ public class ExhibitBoardController {
 		}
 		
 		// 새로운 파일 업로드
-		if (files != null) {
+		if (!files[0].getOriginalFilename().equals("")) {
 			String saveFolder = filePath + File.separator + today;
 			
 			File folder = new File(saveFolder);
@@ -193,7 +197,7 @@ public class ExhibitBoardController {
 		
 		
 		// 새로운 이미지 업로드
-		if (images != null) {
+		if (!images[0].getOriginalFilename().equals("")) {
 			String saveFolder = imagePath + File.separator + today;
 			
 			File folder = new File(saveFolder);
