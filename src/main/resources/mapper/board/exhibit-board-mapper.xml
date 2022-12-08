@@ -13,7 +13,7 @@
 		</selectKey>
 	</insert>
 	
-<!-- 	<update id="modifyArticle" parameterType="board">
+ 	<update id="modifyArticle" parameterType="exhibitBoard">
 		update board
 		<set>
 			<if test = "bcid != null">
@@ -28,11 +28,7 @@
 			updated_time = now()
 		</set>
 		where bid = #{bid}
-	</update> -->
-	
-	<!-- dddddddddddddddddddddddddddddddddddddddddddddd
-	d
-	d -->
+	</update>
 	
 <!-- 	<select id="getAllArticle" parameterType="string" resultMap="baseExhibitBoardMap">
 		select * from board
@@ -65,7 +61,7 @@
 		</foreach>
 	</insert>
 
- 	<delete id="deleteFileList" parameterType="exhibitBoard">
+ 	<delete id="deleteFileList" parameterType="int">
 		delete from file_info
 		where bid = #{bid}
 	</delete>

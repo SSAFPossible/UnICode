@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
-import org.SSAFP.UniCode.model.board.dto.Project;
 import org.SSAFP.UniCode.model.board.dto.ProjectImg;
 import org.SSAFP.UniCode.model.board.service.ExhibitBoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.ProjectServiceImpl;
@@ -37,7 +36,7 @@ public class ExhibitBoardController {
 
 	@Autowired
 	private ExhibitBoardServiceImpl exhibitBoardService;
-
+	
 	@Autowired
 	private ProjectServiceImpl projectService;
 	
@@ -131,4 +130,112 @@ public class ExhibitBoardController {
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
+//	
+//	@GetMapping
+//	public ResponseEntity<List<Board>> getAllArticle() throws Exception{
+//		return new ResponseEntity<List<Board>>(noticeBoardService.getAllArticle("notice"), HttpStatus.OK);
+//	}
+//	
+//	@GetMapping("/{bid}")
+//	public ResponseEntity<Board> getArticle(@PathVariable("bid") int bid) throws Exception{
+//		return new ResponseEntity<Board>(noticeBoardService.getArticle(bid), HttpStatus.OK);
+//	}
+//	
+	@PutMapping
+	public ResponseEntity<String> modify(@RequestPart(value="exhibitBoard") ExhibitBoard exhibitBoard, @RequestPart(value = "mainImg", required = false) MultipartFile mainImg,  @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+		String today = new SimpleDateFormat("yyMMdd").format(new Date());
+		
+		// 프로젝트 대표 이미지 업로드
+		if(mainImg != null) {
+			String saveFolder = imagePath + File.separator + today;
+			
+			File folder = new File(saveFolder);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			ProjectImg projectImg = new ProjectImg();
+			String originFileName = mainImg.getOriginalFilename();
+			if (!originFileName.isEmpty()) {
+				String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
+				projectImg.setSaveFolder(today);
+				projectImg.setOriginFile(originFileName);
+				projectImg.setSaveFile(saveFileName);
+				mainImg.transferTo(new File(folder, saveFileName));
+			}
+			exhibitBoard.getProject().setMainImg(projectImg);		// 프로젝트 객체에 이미지 저장
+		}
+		
+		// 새로운 파일 업로드
+		if (files != null) {
+			String saveFolder = filePath + File.separator + today;
+			
+			File folder = new File(saveFolder);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+			for (MultipartFile mfile : files) {
+				FileInfo fileInfo = new FileInfo();
+				String originFileName = mfile.getOriginalFilename();
+				if (!originFileName.isEmpty()) {
+					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
+					fileInfo.setSaveFolder(today);
+					fileInfo.setOriginFile(originFileName);
+					fileInfo.setSaveFile(saveFileName);
+					mfile.transferTo(new File(folder, saveFileName));
+				}
+				fileInfos.add(fileInfo);
+			}
+			exhibitBoard.setFileList(fileInfos);
+		}
+		
+		
+		// 새로운 이미지 업로드
+		if (images != null) {
+			String saveFolder = imagePath + File.separator + today;
+			
+			File folder = new File(saveFolder);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+			for (MultipartFile mfile : images) {
+				FileInfo fileInfo = new FileInfo();
+				String originFileName = mfile.getOriginalFilename();
+				if (!originFileName.isEmpty()) {
+					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
+					fileInfo.setSaveFolder(today);
+					fileInfo.setOriginFile(originFileName);
+					fileInfo.setSaveFile(saveFileName);
+					mfile.transferTo(new File(folder, saveFileName));
+				}
+				fileInfos.add(fileInfo);
+			}
+			exhibitBoard.setImageList(fileInfos);
+		}
+		
+		// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 수정
+		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), exhibitBoard.getProject().getPid(), filePath, imagePath) && exhibitBoardService.modifyArticle(exhibitBoard)) {
+			exhibitBoard.getProject().setBid(exhibitBoard.getBid());
+			// 프로젝트 수정
+			if(projectService.modifyProject(exhibitBoard.getProject()))
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		}
+	}
+//	
+//	@DeleteMapping("/{bid}")
+//	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
+//		// 기존 파일 삭제 & article 삭제
+//		if(noticeBoardService.deleteFileList(bid, filePath, imagePath) && noticeBoardService.deleteArticle(bid)) {
+//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+//		} else {
+//			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+//		}
+//	}
 }

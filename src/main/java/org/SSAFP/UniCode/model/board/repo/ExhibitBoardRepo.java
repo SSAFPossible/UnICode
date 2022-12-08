@@ -10,8 +10,8 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ExhibitBoardRepo {
 	public boolean writeArticle(ExhibitBoard exhibitBoard) throws Exception;
 	
-//	public boolean modifyArticle(ExhibitBoard exhibitBoard) throws Exception;
-//	
+	public boolean modifyArticle(ExhibitBoard exhibitBoard) throws Exception;
+	
 //	public boolean deleteArticle(int bid) throws Exception;
 //
 //	public List<ExhibitBoard> getAllArticle(int bcid) throws Exception;
@@ -28,7 +28,7 @@ public interface ExhibitBoardRepo {
 	
 	public boolean uploadImageList(ExhibitBoard exhibitBoard) throws Exception;
 
-	public boolean deleteFileList(ExhibitBoard exhibitBoard) throws Exception;
+	public boolean deleteFileList(int bid) throws Exception;
 
 	public List<FileInfo> getFileList(int bid) throws Exception;
 

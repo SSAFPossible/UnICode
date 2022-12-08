@@ -13,15 +13,30 @@
 		</selectKey>
 	</insert>
 	
+ 	<update id="modifyProject" parameterType="project">
+		update project
+		<set>
+			<if test = "url != null">
+				url = #{url},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	
 	<select id="getMainImg" parameterType="int" resultMap="baseImgMap">
 		select * from project_img
-		from pid = #{pid}
+		where pid = #{pid}
 	</select>
 	
  	<insert id="uploadMainImg" parameterType="project">
 		insert into project_img (pid, save_folder, origin_file, save_file)
 		values (#{pid}, #{mainImg.saveFolder}, #{mainImg.originFile}, #{mainImg.saveFile})
 	</insert>
+	
+ 	<delete id="deleteMainImg" parameterType="project">
+		delete from project_img
+		where pid = #{pid}
+	</delete>
 	
 	<select id="mainImg" resultMap="baseImgMap">
 		select * from project_img
