@@ -119,11 +119,11 @@
 		where p.bid = #{bid}
 	</select>
 	
-<!-- 	<update id="updateHit" parameterType="int">
+	<update id="updateHit" parameterType="int">
 		update board
 		set hit = hit + 1
 		where bid = #{bid}
-	</update> -->
+	</update>
 	
 	<resultMap type="exhibitBoard" id="baseExhibitBoardMap">
 		<id column="bid" property="bid"/>

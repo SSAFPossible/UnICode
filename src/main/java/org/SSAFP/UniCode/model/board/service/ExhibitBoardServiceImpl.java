@@ -49,6 +49,7 @@ public class ExhibitBoardServiceImpl {
 	}
 	
 	public ExhibitBoard getArticle(int bid) throws Exception{
+		exhibitBoardRepo.updateHit(bid);
 		return exhibitBoardRepo.getArticle(bid);
 	}
 	

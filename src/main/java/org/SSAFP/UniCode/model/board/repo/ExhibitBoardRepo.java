@@ -27,7 +27,7 @@ public interface ExhibitBoardRepo {
 
 	public List<FileInfo> getFileList(int bid) throws Exception;
 
-//	public boolean updateHit(int bid) throws Exception;
-//	
+	public boolean updateHit(int bid) throws Exception;
+	
 //	public boolean clickLike(int bid) throws Exception;
 }
