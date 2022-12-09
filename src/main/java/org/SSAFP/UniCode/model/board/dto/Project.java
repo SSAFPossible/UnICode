@@ -15,5 +15,6 @@ public class Project {
 	private int pid;
 	private int bid;
 	private String url;
-	private ProjectImg mainImg;
+	private ProjectMainImg mainImg;
+	private Language language;
 }

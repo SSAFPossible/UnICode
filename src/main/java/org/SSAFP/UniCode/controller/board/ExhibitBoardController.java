@@ -9,7 +9,7 @@ import java.util.List;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.dto.Language;
-import org.SSAFP.UniCode.model.board.dto.ProjectImg;
+import org.SSAFP.UniCode.model.board.dto.ProjectMainImg;
 import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.service.ExhibitBoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.ProjectServiceImpl;
@@ -50,7 +50,7 @@ public class ExhibitBoardController {
 	@Value("${file.path.upload-images}")
 	String imagePath;
 	
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<String> write(@RequestPart(value="exhibitBoard") ExhibitBoard exhibitBoard, @RequestPart(value = "mainImg", required = false) MultipartFile mainImg,  @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -63,7 +63,7 @@ public class ExhibitBoardController {
 				folder.mkdirs();
 			}
 			
-			ProjectImg projectImg = new ProjectImg();
+			ProjectMainImg projectImg = new ProjectMainImg();
 			String originFileName = mainImg.getOriginalFilename();
 			if (!originFileName.isEmpty()) {
 				String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
@@ -134,12 +134,13 @@ public class ExhibitBoardController {
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
-//	
-//	@GetMapping
-//	public ResponseEntity<List<Board>> getAllArticle() throws Exception{
-//		return new ResponseEntity<List<Board>>(noticeBoardService.getAllArticle("notice"), HttpStatus.OK);
-//	}
-//	
+	
+	@GetMapping
+	public ResponseEntity<List<ExhibitBoard>> getExhibitAllArticle(@RequestBody Language language) throws Exception{
+		language.setNameSize(language.getName().size());
+		return new ResponseEntity<List<ExhibitBoard>>(exhibitBoardService.getExhibitAllArticle(language), HttpStatus.OK);
+	}
+	
 //	@GetMapping("/{bid}")
 //	public ResponseEntity<Board> getArticle(@PathVariable("bid") int bid) throws Exception{
 //		return new ResponseEntity<Board>(noticeBoardService.getArticle(bid), HttpStatus.OK);
@@ -158,7 +159,7 @@ public class ExhibitBoardController {
 				folder.mkdirs();
 			}
 			
-			ProjectImg projectImg = new ProjectImg();
+			ProjectMainImg projectImg = new ProjectMainImg();
 			String originFileName = mainImg.getOriginalFilename();
 			if (!originFileName.isEmpty()) {
 				String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));

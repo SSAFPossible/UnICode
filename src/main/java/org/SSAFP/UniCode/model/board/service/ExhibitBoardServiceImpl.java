@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
+import org.SSAFP.UniCode.model.board.dto.Language;
+import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.repo.ExhibitBoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,10 @@ public class ExhibitBoardServiceImpl {
 	@Transactional
 	public boolean writeArticle(ExhibitBoard exhibitBoard) throws Exception{
 		boolean write = exhibitBoardRepo.writeArticle(exhibitBoard);
-		if(write && exhibitBoard.getFileList().size() > 0) {
+		if(write && exhibitBoard.getFileList() != null) {
 			write = exhibitBoardRepo.uploadFileList(exhibitBoard);
 		}
-		if (write && exhibitBoard.getImageList().size() > 0) {
+		if (write && exhibitBoard.getImageList() != null) {
 			write = exhibitBoardRepo.uploadImageList(exhibitBoard);
 		}
 		return write;
@@ -43,9 +45,9 @@ public class ExhibitBoardServiceImpl {
 //		
 //	}
 //
-//	public List<ExhibitBoard> getAllArticle(int bcid) throws Exception{
-//		
-//	}
+	public List<ExhibitBoard> getExhibitAllArticle(Language language) throws Exception {
+		return exhibitBoardRepo.getExhibitAllArticle(language);
+	}
 //	
 //	public List<ExhibitBoard> getAllArticleByLike(int bcid, String dir) throws Exception{
 //		

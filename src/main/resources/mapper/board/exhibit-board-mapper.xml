@@ -30,11 +30,22 @@
 		where bid = #{bid}
 	</update>
 	
-<!-- 	<select id="getAllArticle" parameterType="string" resultMap="baseExhibitBoardMap">
+	<select id="getExhibitAllArticle" parameterType="language" resultMap="baseExhibitBoardProjectMap">
 		select * from board
-		where bcid = #{bcid}
+		where
+		<if test="nameSize > 0">
+			bid in (select bid from b_develop
+							where lid in (select lid from language 
+							where name in
+							<foreach item="lan" collection="name" open="(" close=")" separator=",">
+	    						#{lan}
+	   						</foreach>
+					)) and	
+		</if>
+		bcid = "exhibit"
 	</select>
-	
+
+<!--	
 	<select id="getArticle" parameterType="int" resultMap="baseExhibitBoardMap">
 		select * from board
 		where bid = #{bid}
@@ -81,6 +92,11 @@
 		where type="image" and bid = #{bid}
 	</select>
 	
+	<select id="project" resultMap="org.SSAFP.UniCode.model.board.repo.ProjectRepo.baseProjectMainImgMap">
+		select * from project p
+		where p.bid = #{bid}
+	</select>
+	
 <!-- 	<update id="updateHit" parameterType="int">
 		update board
 		set hit = hit + 1
@@ -102,6 +118,10 @@
 	<resultMap type="exhibitBoard" id="baseExhibitBoardFileMap" extends="baseExhibitBoardMap">
 		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
 		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
+	</resultMap>
+	
+	<resultMap type="exhibitBoard" id="baseExhibitBoardProjectMap" extends="baseExhibitBoardMap">
+		<association property="project" column="bid" javaType="project" select="project"/>
 	</resultMap>
 	
 	<resultMap type="fileInfo" id="baseFileInfoMap">
