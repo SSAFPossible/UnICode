@@ -17,4 +17,5 @@ public class Project {
 	private String url;
 	private ProjectMainImg mainImg;
 	private Language language;
+	private ProjectMember member;
 }

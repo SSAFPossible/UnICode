@@ -21,6 +21,12 @@ public interface ProjectRepo {
 	public boolean registProjectLanguage(Project project) throws Exception;
 	
 	public boolean deleteProjectLanguage(int pid) throws Exception;
-	
+
 	public List<String> getProjectLanguage(int pid) throws Exception;
+
+	public boolean registProjectMember(Project project) throws Exception;
+	
+	public boolean deleteProjectMember(int pid) throws Exception;
+
+	public List<String> getProjectMember(int pid) throws Exception;
 }

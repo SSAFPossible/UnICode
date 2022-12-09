@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
+import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
-import org.SSAFP.UniCode.model.board.dto.Language;
-import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.repo.ExhibitBoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,27 +44,14 @@ public class ExhibitBoardServiceImpl {
 		return exhibitBoardRepo.deleteArticle(bid);
 	}
 
-	public List<ExhibitBoard> getExhibitAllArticle(Language language) throws Exception {
-		return exhibitBoardRepo.getExhibitAllArticle(language);
+	public List<ExhibitBoard> getAllExhibitArticle(ExhibitBoardParam exhibitBoardParam) throws Exception {
+		return exhibitBoardRepo.getAllExhibitArticle(exhibitBoardParam);
 	}
-//	
-//	public List<ExhibitBoard> getAllArticleByLike(int bcid, String dir) throws Exception{
-//		
-//	}
-//
+	
 	public ExhibitBoard getArticle(int bid) throws Exception{
 		return exhibitBoardRepo.getArticle(bid);
 	}
-//
-//	public ExhibitBoard getArticleByMemberId(int bid) throws Exception{
-//		
-//	}
-//
-//	public ExhibitBoard getArticleByLang(int bid) throws Exception{
-//		
-//	}
-//	
-
+	
 	// 실제 파일 삭제 메소드
 	@Transactional
 	public boolean deleteFileList(int bid, String filePath, String imagePath) throws Exception{

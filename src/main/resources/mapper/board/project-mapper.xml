@@ -57,8 +57,30 @@
 		where pid = #{pid}
 	</select>
 	
+	<insert id="registProjectMember" parameterType="project">
+		insert into project_member(pid, uid) values
+		<foreach collection="member.uid" item="curUid" separator=",">
+			(#{pid}, #{curUid})
+		</foreach>
+	</insert>
+	
+ 	<delete id="deleteProjectMember" parameterType="int">
+		delete from project_member
+		where pid = #{pid}
+	</delete>
+	
+	<select id="getProjectMember" parameterType="int" resultType="string">
+		select uid from project_member
+		where pid = #{pid}
+	</select>
+	
 	<select id="mainImg" resultMap="baseMainImgMap">
 		select * from project_main_img
+		where pid = #{pid}
+	</select>
+	
+	<select id="member" resultType="projectMember">
+		select * from project_member
 		where pid = #{pid}
 	</select>
 	

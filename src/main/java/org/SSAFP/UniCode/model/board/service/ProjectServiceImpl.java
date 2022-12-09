@@ -25,23 +25,40 @@ public class ProjectServiceImpl {
 		if(regist && project.getLanguage() != null) {
 			regist = projectRepo.registProjectLanguage(project);
 		}
+		if(regist && project.getMember() != null) {
+			regist = projectRepo.registProjectMember(project);
+		}
 		return regist;
 	}
 
 	@Transactional
 	public boolean modifyProject(Project project) throws Exception{
-		boolean modify = projectRepo.modifyProject(project) && projectRepo.deleteProjectLanguage(project.getPid());
+		// 프로젝트 수정 & 프로젝트 개발 언어 삭제 & 프로젝트 멤버 삭제
+		boolean modify = projectRepo.modifyProject(project) && projectRepo.deleteProjectLanguage(project.getPid()) && projectRepo.deleteProjectLanguage(project.getPid());
+		
+		// 개발 언어 업로드
 		if(modify && project.getLanguage() != null) {
 			modify = projectRepo.registProjectLanguage(project);
 		}
+		
+		// 대표 이미지 업로드
 		if(modify && project.getMainImg() != null) {
 			modify = projectRepo.uploadMainImg(project);
+		}
+		
+		// 프로젝트 멤버 업로드
+		if(modify && project.getMember() != null) {
+			modify = projectRepo.registProjectMember(project);
 		}
 		return modify;
 	}
 	
 	public List<String> getProjectLanguage(int pid) throws Exception{
 		return projectRepo.getProjectLanguage(pid);
+	}
+	
+	public List<String> getProjectMember(int pid) throws Exception{
+		return projectRepo.getProjectMember(pid);
 	}
 	
 	// 실제 파일 삭제 메소드

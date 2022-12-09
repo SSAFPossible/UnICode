@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
+import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.dto.Language;
 import org.SSAFP.UniCode.model.board.dto.ProjectMainImg;
+import org.SSAFP.UniCode.model.board.dto.ProjectMember;
 import org.SSAFP.UniCode.model.board.service.ExhibitBoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.ProjectServiceImpl;
 import org.slf4j.Logger;
@@ -137,18 +139,25 @@ public class ExhibitBoardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<ExhibitBoard>> getExhibitAllArticle(@RequestBody Language language) throws Exception{
-		language.setNameSize(language.getName().size());
-		return new ResponseEntity<List<ExhibitBoard>>(exhibitBoardService.getExhibitAllArticle(language), HttpStatus.OK);
+	public ResponseEntity<List<ExhibitBoard>> getExhibitAllArticle(@RequestBody ExhibitBoardParam exhibitBoardParam) throws Exception{
+		exhibitBoardParam.setLanguageSize(exhibitBoardParam.getLanguage().size());
+		return new ResponseEntity<List<ExhibitBoard>>(exhibitBoardService.getAllExhibitArticle(exhibitBoardParam), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{bid}")
 	public ResponseEntity<ExhibitBoard> getArticle(@PathVariable("bid") int bid) throws Exception{
 		ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
+		int pid = exhibitBoard.getProject().getPid();
 		
+		// 결과 객체에 프로젝트 개발 언어 저장
 		Language language = new Language();
-		language.setName(projectService.getProjectLanguage(exhibitBoard.getProject().getPid()));
+		language.setName(projectService.getProjectLanguage(pid));
 		exhibitBoard.getProject().setLanguage(language);
+		
+		// 결과 객체에 프로젝트 멤버 저장
+		ProjectMember projectMember = new ProjectMember();
+		projectMember.setUid(projectService.getProjectMember(pid));
+		exhibitBoard.getProject().setMember(projectMember);
 		
 		return new ResponseEntity<ExhibitBoard>(exhibitBoard, HttpStatus.OK);
 	}

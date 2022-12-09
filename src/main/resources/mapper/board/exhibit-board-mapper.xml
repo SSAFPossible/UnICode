@@ -30,22 +30,45 @@
 		where bid = #{bid}
 	</update>
 	
-	<select id="getExhibitAllArticle" parameterType="language" resultMap="baseExhibitBoardProjectMap">
-		select * from board
-		where
-		<if test="nameSize > 0">
-			bid in (select bid from b_develop
-							where lid in (select lid from language 
+	<select id="getAllExhibitArticle" parameterType="exhibitBoardParam" resultMap="baseExhibitBoardProjectMap">
+		select * from board where
+		
+		<if test="languageSize > 0">
+            bid in (
+            	select bid from project
+				where pid in (
+					select pid from p_develop
+					where lid in (
+							select lid from language 
 							where name in
-							<foreach item="lan" collection="name" open="(" close=")" separator=",">
+							<foreach item="lan" collection="language" open="(" close=")" separator=",">
 	    						#{lan}
 	   						</foreach>
-					)) and	
+							)
+					)) and
 		</if>
+		
+		<if test="uid!=''">
+			bid in (
+					select bid from project
+					where pid in (
+						select pid from project_member 
+						where uid = #{uid}
+					)
+			) and
+		</if>
+		
 		bcid = "exhibit"
+		
+		<if test="sortLike==true">
+			order by like_cnt desc
+		</if>
+		<if test="sortLike!=true">
+			order by created_time
+		</if>
 	</select>
 
-	<select id="getArticle" parameterType="int" resultMap="extendExhibitBoardMap">
+	<select id="getArticle" parameterType="int" resultMap="detailExhibitBoardMap">
 		select * from board
 		where bid = #{bid}
 	</select>
@@ -114,7 +137,7 @@
 		<result column="updated_time" property="updatedTime"/>
 	</resultMap>
 	
-	<resultMap type="exhibitBoard" id="extendExhibitBoardMap" extends="baseExhibitBoardMap">
+	<resultMap type="exhibitBoard" id="detailExhibitBoardMap" extends="baseExhibitBoardMap">
 		<association property="project" column="bid" javaType="project" select="project"/>
 		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
 		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
