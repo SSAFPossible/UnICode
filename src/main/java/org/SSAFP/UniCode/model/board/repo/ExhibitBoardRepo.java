@@ -13,8 +13,8 @@ public interface ExhibitBoardRepo {
 	
 	public boolean modifyArticle(ExhibitBoard exhibitBoard) throws Exception;
 	
-//	public boolean deleteArticle(int bid) throws Exception;
-//
+	public boolean deleteArticle(int bid) throws Exception;
+
 	public List<ExhibitBoard> getExhibitAllArticle(Language language) throws Exception;
 	
 //	public List<ExhibitBoard> getAllArticleByLike(int bcid, String dir) throws Exception;

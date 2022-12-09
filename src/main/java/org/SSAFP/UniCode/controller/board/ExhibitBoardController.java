@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -230,7 +230,7 @@ public class ExhibitBoardController {
 		}
 		
 		// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 수정
-		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), exhibitBoard.getProject().getPid(), filePath, imagePath) && exhibitBoardService.modifyArticle(exhibitBoard)) {
+		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath) && exhibitBoardService.modifyArticle(exhibitBoard)) {
 			exhibitBoard.getProject().setBid(exhibitBoard.getBid());
 			// 프로젝트 수정
 			if(projectService.modifyProject(exhibitBoard.getProject()))
@@ -240,14 +240,17 @@ public class ExhibitBoardController {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 		}
 	}
-//	
-//	@DeleteMapping("/{bid}")
-//	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
-//		// 기존 파일 삭제 & article 삭제
-//		if(noticeBoardService.deleteFileList(bid, filePath, imagePath) && noticeBoardService.deleteArticle(bid)) {
-//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
-//		}
-//	}
+	
+	@DeleteMapping("/{bid}")
+	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
+		// ariticle 정보 가져오기
+		ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
+		
+		// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 삭제
+		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath) && exhibitBoardService.deleteArticle(bid)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		}
+	}
 }

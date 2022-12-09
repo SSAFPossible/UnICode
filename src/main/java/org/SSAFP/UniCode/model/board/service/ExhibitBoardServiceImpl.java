@@ -40,11 +40,11 @@ public class ExhibitBoardServiceImpl {
 		}
 		return modify;
 	}
-//	
-//	public boolean deleteArticle(int bid) throws Exception{
-//		
-//	}
-//
+	
+	public boolean deleteArticle(int bid) throws Exception{
+		return exhibitBoardRepo.deleteArticle(bid);
+	}
+
 	public List<ExhibitBoard> getExhibitAllArticle(Language language) throws Exception {
 		return exhibitBoardRepo.getExhibitAllArticle(language);
 	}
@@ -68,7 +68,7 @@ public class ExhibitBoardServiceImpl {
 
 	// 실제 파일 삭제 메소드
 	@Transactional
-	public boolean deleteFileList(int bid, int pid, String filePath, String imagePath) throws Exception{
+	public boolean deleteFileList(int bid, String filePath, String imagePath) throws Exception{
 		// 프로젝트 전시글 파일 조회
 		List<FileInfo> fileInfoList = exhibitBoardRepo.getFileList(bid);
 		if(fileInfoList.size() > 0) {
