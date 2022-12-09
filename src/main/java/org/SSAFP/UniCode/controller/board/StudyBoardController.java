@@ -16,6 +16,7 @@ import org.SSAFP.UniCode.model.board.service.StudyBoardServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class StudyBoardController {
 	private static final String FAIL = "fail";
 
 	@Autowired
+	@Qualifier("studyBoardServiceImpl")
 	private StudyBoardServiceImpl studyBoardService;
 
 	@Value("${file.path.upload-files}")
@@ -169,6 +171,7 @@ public class StudyBoardController {
 		return new ResponseEntity<StudyBoard>(studyBoardService.getStudyBoard(bid), HttpStatus.OK);
 	}
 	
+	// 작성한 StudyBoard 수정 
 	@PutMapping
 	public ResponseEntity<String> modify(@RequestPart(value = "studyBoard") StudyBoard studyBoard,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
@@ -234,6 +237,7 @@ public class StudyBoardController {
 		}
 	}
 
+	// StudyBoard 삭제 
 	@DeleteMapping("/{bid}")
 	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
 		// 기존 파일 삭제 & article 삭제

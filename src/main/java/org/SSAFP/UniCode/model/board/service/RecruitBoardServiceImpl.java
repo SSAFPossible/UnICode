@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Primary
 public class RecruitBoardServiceImpl extends BoardServiceImpl {
 	
 	@Autowired

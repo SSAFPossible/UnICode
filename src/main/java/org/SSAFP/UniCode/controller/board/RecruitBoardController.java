@@ -42,6 +42,7 @@ public class RecruitBoardController {
 	private static final String FAIL = "fail";
 	
 	@Autowired
+	@Qualifier("recruitBoardServiceImpl")
 	private RecruitBoardServiceImpl recruitBoardService; // 인원 모집 게시판 기능 Service
 
 	@Value("${file.path.upload-files}")
