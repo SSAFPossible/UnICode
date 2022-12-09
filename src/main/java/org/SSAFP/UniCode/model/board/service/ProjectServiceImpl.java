@@ -34,7 +34,7 @@ public class ProjectServiceImpl {
 	@Transactional
 	public boolean modifyProject(Project project) throws Exception{
 		// 프로젝트 수정 & 프로젝트 개발 언어 삭제 & 프로젝트 멤버 삭제
-		boolean modify = projectRepo.modifyProject(project) && projectRepo.deleteProjectLanguage(project.getPid()) && projectRepo.deleteProjectLanguage(project.getPid());
+		boolean modify = projectRepo.modifyProject(project) && projectRepo.deleteProjectLanguage(project.getPid()) && projectRepo.deleteProjectMember(project.getPid());
 		
 		// 개발 언어 업로드
 		if(modify && project.getLanguage() != null) {
