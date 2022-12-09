@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.dto.Language;
 import org.SSAFP.UniCode.model.board.dto.ProjectMainImg;
-import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
 import org.SSAFP.UniCode.model.board.service.ExhibitBoardServiceImpl;
 import org.SSAFP.UniCode.model.board.service.ProjectServiceImpl;
 import org.slf4j.Logger;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -141,11 +142,17 @@ public class ExhibitBoardController {
 		return new ResponseEntity<List<ExhibitBoard>>(exhibitBoardService.getExhibitAllArticle(language), HttpStatus.OK);
 	}
 	
-//	@GetMapping("/{bid}")
-//	public ResponseEntity<Board> getArticle(@PathVariable("bid") int bid) throws Exception{
-//		return new ResponseEntity<Board>(noticeBoardService.getArticle(bid), HttpStatus.OK);
-//	}
-//	
+	@GetMapping("/{bid}")
+	public ResponseEntity<ExhibitBoard> getArticle(@PathVariable("bid") int bid) throws Exception{
+		ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
+		
+		Language language = new Language();
+		language.setName(projectService.getProjectLanguage(exhibitBoard.getProject().getPid()));
+		exhibitBoard.getProject().setLanguage(language);
+		
+		return new ResponseEntity<ExhibitBoard>(exhibitBoard, HttpStatus.OK);
+	}
+	
 	@PutMapping
 	public ResponseEntity<String> modify(@RequestPart(value="exhibitBoard") ExhibitBoard exhibitBoard, @RequestPart(value = "mainImg", required = false) MultipartFile mainImg,  @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());

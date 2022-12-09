@@ -50,6 +50,13 @@
 		where pid = #{pid}
 	</delete>
 	
+	<select id="getProjectLanguage" parameterType="int" resultType="string">
+		select l.name
+		from p_develop pd
+		join language l on pd.lid = l.lid
+		where pid = #{pid}
+	</select>
+	
 	<select id="mainImg" resultMap="baseMainImgMap">
 		select * from project_main_img
 		where pid = #{pid}

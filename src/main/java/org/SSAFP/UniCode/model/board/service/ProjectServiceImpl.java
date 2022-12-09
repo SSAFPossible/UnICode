@@ -1,6 +1,7 @@
 package org.SSAFP.UniCode.model.board.service;
 
 import java.io.File;
+import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Project;
 import org.SSAFP.UniCode.model.board.dto.ProjectMainImg;
@@ -37,6 +38,10 @@ public class ProjectServiceImpl {
 			modify = projectRepo.uploadMainImg(project);
 		}
 		return modify;
+	}
+	
+	public List<String> getProjectLanguage(int pid) throws Exception{
+		return projectRepo.getProjectLanguage(pid);
 	}
 	
 	// 실제 파일 삭제 메소드

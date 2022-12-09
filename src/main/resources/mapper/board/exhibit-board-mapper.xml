@@ -45,12 +45,12 @@
 		bcid = "exhibit"
 	</select>
 
-<!--	
-	<select id="getArticle" parameterType="int" resultMap="baseExhibitBoardMap">
+	<select id="getArticle" parameterType="int" resultMap="extendExhibitBoardMap">
 		select * from board
 		where bid = #{bid}
 	</select>
 	
+	<!--	
 	<delete id="deleteArticle" parameterType="int">
 		delete from board
 		where bid = #{bid}
@@ -115,7 +115,8 @@
 		<result column="updated_time" property="updatedTime"/>
 	</resultMap>
 	
-	<resultMap type="exhibitBoard" id="baseExhibitBoardFileMap" extends="baseExhibitBoardMap">
+	<resultMap type="exhibitBoard" id="extendExhibitBoardMap" extends="baseExhibitBoardMap">
+		<association property="project" column="bid" javaType="project" select="project"/>
 		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
 		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
 	</resultMap>

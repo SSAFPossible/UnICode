@@ -53,9 +53,9 @@ public class ExhibitBoardServiceImpl {
 //		
 //	}
 //
-//	public ExhibitBoard getArticle(int bid) throws Exception{
-//		
-//	}
+	public ExhibitBoard getArticle(int bid) throws Exception{
+		return exhibitBoardRepo.getArticle(bid);
+	}
 //
 //	public ExhibitBoard getArticleByMemberId(int bid) throws Exception{
 //		

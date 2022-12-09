@@ -19,8 +19,8 @@ public interface ExhibitBoardRepo {
 	
 //	public List<ExhibitBoard> getAllArticleByLike(int bcid, String dir) throws Exception;
 //
-//	public ExhibitBoard getArticle(int bid) throws Exception;
-//
+	public ExhibitBoard getArticle(int bid) throws Exception;
+
 //	public ExhibitBoard getArticleByMemberId(int bid) throws Exception;
 //
 //	public ExhibitBoard getArticleByLang(int bid) throws Exception;

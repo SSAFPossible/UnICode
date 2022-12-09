@@ -1,5 +1,7 @@
 package org.SSAFP.UniCode.model.board.repo;
 
+import java.util.List;
+
 import org.SSAFP.UniCode.model.board.dto.Project;
 import org.SSAFP.UniCode.model.board.dto.ProjectMainImg;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,10 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ProjectRepo {
 	public boolean registProject(Project project) throws Exception;
 	
-	public boolean registProjectLanguage(Project project) throws Exception;
-	
-	public boolean deleteProjectLanguage(int pid) throws Exception;
-	
 	public boolean modifyProject(Project project) throws Exception;
 
 	public boolean uploadMainImg(Project project) throws Exception;
@@ -19,4 +17,10 @@ public interface ProjectRepo {
 	public ProjectMainImg getMainImg(int pid) throws Exception;
 	
 	public boolean deleteMainImg(int pid) throws Exception;
+	
+	public boolean registProjectLanguage(Project project) throws Exception;
+	
+	public boolean deleteProjectLanguage(int pid) throws Exception;
+	
+	public List<String> getProjectLanguage(int pid) throws Exception;
 }
