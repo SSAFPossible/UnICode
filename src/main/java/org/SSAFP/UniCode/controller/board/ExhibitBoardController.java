@@ -293,10 +293,13 @@ public class ExhibitBoardController {
 	@PostMapping("/like")
 	public ResponseEntity<String> clickLike(@RequestBody BoardLike boardLike) throws Exception {
 		try {
-			exhibitBoardService.clickLike(boardLike);
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			boolean like = exhibitBoardService.clickLike(boardLike);
+			if (like) { // 좋아요 등록
+				return new ResponseEntity<String>("true", HttpStatus.OK);
+			} else { // 좋아요 취소
+				return new ResponseEntity<String>("false", HttpStatus.OK);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
