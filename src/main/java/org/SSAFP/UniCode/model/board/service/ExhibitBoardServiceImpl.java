@@ -27,9 +27,13 @@ public class ExhibitBoardServiceImpl {
 		if (write && exhibitBoard.getImageList() != null) {
 			write = exhibitBoardRepo.uploadImageList(exhibitBoard);
 		}
-		return write;
+		if(!write) {
+			throw new Exception();
+		}
+		return true;
 	}
-	
+
+	@Transactional
 	public boolean modifyArticle(ExhibitBoard exhibitBoard) throws Exception{
 		boolean modify = exhibitBoardRepo.modifyArticle(exhibitBoard);
 		if(modify && exhibitBoard.getFileList() != null) {
@@ -38,11 +42,18 @@ public class ExhibitBoardServiceImpl {
 		if(modify && exhibitBoard.getImageList() != null) {
 			modify = exhibitBoardRepo.uploadImageList(exhibitBoard);
 		}
-		return modify;
+		if(!modify) {
+			throw new Exception();
+		}
+		return true;
 	}
-	
+
+	@Transactional
 	public boolean deleteArticle(int bid) throws Exception{
-		return exhibitBoardRepo.deleteArticle(bid);
+		if(!exhibitBoardRepo.deleteArticle(bid)) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	public List<ExhibitBoard> getAllExhibitArticle(ExhibitBoardParam exhibitBoardParam) throws Exception {
@@ -72,7 +83,7 @@ public class ExhibitBoardServiceImpl {
 				exhibitBoardRepo.deleteFileList(bid);
 			} catch(Exception e) {
 				e.printStackTrace();
-				return false;
+				throw new Exception();
 			}
 		}
 		return true;

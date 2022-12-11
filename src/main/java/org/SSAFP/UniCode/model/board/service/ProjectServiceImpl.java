@@ -28,29 +28,32 @@ public class ProjectServiceImpl {
 		if(regist && project.getMember() != null) {
 			regist = projectRepo.registProjectMember(project);
 		}
-		return regist;
+		if(!regist) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Transactional
 	public boolean modifyProject(Project project) throws Exception{
 		// 프로젝트 수정 & 프로젝트 개발 언어 삭제 & 프로젝트 멤버 삭제
 		boolean modify = projectRepo.modifyProject(project) && projectRepo.deleteProjectLanguage(project.getPid()) && projectRepo.deleteProjectMember(project.getPid());
-		
 		// 개발 언어 업로드
 		if(modify && project.getLanguage() != null) {
 			modify = projectRepo.registProjectLanguage(project);
 		}
-		
 		// 대표 이미지 업로드
 		if(modify && project.getMainImg() != null) {
 			modify = projectRepo.uploadMainImg(project);
 		}
-		
 		// 프로젝트 멤버 업로드
 		if(modify && project.getMember() != null) {
 			modify = projectRepo.registProjectMember(project);
 		}
-		return modify;
+		if(!modify) {
+			throw new Exception();
+		}
+		return true;
 	}
 	
 	public List<String> getProjectLanguage(int pid) throws Exception{
@@ -72,7 +75,7 @@ public class ProjectServiceImpl {
 				projectRepo.deleteMainImg(pid);
 			} catch(Exception e) {
 				e.printStackTrace();
-				return false;
+				throw new Exception();
 			}
 		}
 		return true;

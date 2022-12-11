@@ -44,232 +44,260 @@ public class ExhibitBoardController {
 
 	@Autowired
 	private ExhibitBoardServiceImpl exhibitBoardService;
-	
+
 	@Autowired
 	private ProjectServiceImpl projectService;
-	
+
 	@Value("${file.path.upload-files}")
 	String filePath;
-	
+
 	@Value("${file.path.upload-images}")
 	String imagePath;
-	
+
 	@PostMapping
-	public ResponseEntity<String> write(@RequestPart(value="exhibitBoard") ExhibitBoard exhibitBoard, @RequestPart(value = "mainImg", required = false) MultipartFile mainImg,  @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+	public ResponseEntity<String> write(@RequestPart(value = "exhibitBoard") ExhibitBoard exhibitBoard,
+			@RequestPart(value = "mainImg", required = false) MultipartFile mainImg,
+			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
+			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+		try {
+			String today = new SimpleDateFormat("yyMMdd").format(new Date());
+			// 프로젝트 대표 이미지 업로드
+			if (mainImg != null) {
+				String saveFolder = imagePath + File.separator + today;
 
-		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-		// 프로젝트 대표 이미지 업로드
-		if(mainImg != null) {
-			String saveFolder = imagePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			ProjectMainImg projectImg = new ProjectMainImg();
-			String originFileName = mainImg.getOriginalFilename();
-			if (!originFileName.isEmpty()) {
-				String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-				projectImg.setSaveFolder(today);
-				projectImg.setOriginFile(originFileName);
-				projectImg.setSaveFile(saveFileName);
-				mainImg.transferTo(new File(folder, saveFileName));
-			}
-			exhibitBoard.getProject().setMainImg(projectImg);		// 프로젝트 객체에 이미지 저장
-		}
-		
-		// 파일 업로드
-		if (!files[0].getOriginalFilename().equals("")) {
-			String saveFolder = filePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : files) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				ProjectMainImg projectImg = new ProjectMainImg();
+				String originFileName = mainImg.getOriginalFilename();
 				if (!originFileName.isEmpty()) {
 					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+					projectImg.setSaveFolder(today);
+					projectImg.setOriginFile(originFileName);
+					projectImg.setSaveFile(saveFileName);
+					mainImg.transferTo(new File(folder, saveFileName));
 				}
-				fileInfos.add(fileInfo);
+				exhibitBoard.getProject().setMainImg(projectImg); // 프로젝트 객체에 이미지 저장
 			}
-			exhibitBoard.setFileList(fileInfos);
-		}
-		
-		// 이미지 업로드
-		if (!images[0].getOriginalFilename().equals("")) {
-			String saveFolder = imagePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : images) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
-				if (!originFileName.isEmpty()) {
-					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
-				}
-				fileInfos.add(fileInfo);
-			}
-			exhibitBoard.setImageList(fileInfos);
-		}
 
-		// 전시 게시글 저장
-		if(exhibitBoardService.writeArticle(exhibitBoard)) {
+			// 파일 업로드
+			if (!files[0].getOriginalFilename().equals("")) {
+				String saveFolder = filePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : files) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
+				}
+				exhibitBoard.setFileList(fileInfos);
+			}
+
+			// 이미지 업로드
+			if (!images[0].getOriginalFilename().equals("")) {
+				String saveFolder = imagePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : images) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
+				}
+				exhibitBoard.setImageList(fileInfos);
+			}
+
+			// 글 작성
+			exhibitBoardService.writeArticle(exhibitBoard);
 			exhibitBoard.getProject().setBid(exhibitBoard.getBid());
+
 			// 프로젝트 저장
-			if(projectService.registProject(exhibitBoard.getProject()))
-				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			projectService.registProject(exhibitBoard.getProject());
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<ExhibitBoard>> getExhibitAllArticle(@RequestBody ExhibitBoardParam exhibitBoardParam) throws Exception{
+	public ResponseEntity<List<ExhibitBoard>> getExhibitAllArticle(@RequestBody ExhibitBoardParam exhibitBoardParam)
+			throws Exception {
 		exhibitBoardParam.setLanguageSize(exhibitBoardParam.getLanguage().size());
-		return new ResponseEntity<List<ExhibitBoard>>(exhibitBoardService.getAllExhibitArticle(exhibitBoardParam), HttpStatus.OK);
+		return new ResponseEntity<List<ExhibitBoard>>(exhibitBoardService.getAllExhibitArticle(exhibitBoardParam),
+				HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{bid}")
-	public ResponseEntity<ExhibitBoard> getArticle(@PathVariable("bid") int bid) throws Exception{
+	public ResponseEntity<ExhibitBoard> getArticle(@PathVariable("bid") int bid) throws Exception {
 		ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
 		int pid = exhibitBoard.getProject().getPid();
-		
+
 		// 결과 객체에 프로젝트 개발 언어 저장
 		Language language = new Language();
 		language.setName(projectService.getProjectLanguage(pid));
 		exhibitBoard.getProject().setLanguage(language);
-		
+
 		// 결과 객체에 프로젝트 멤버 저장
 		ProjectMember projectMember = new ProjectMember();
 		projectMember.setUid(projectService.getProjectMember(pid));
 		exhibitBoard.getProject().setMember(projectMember);
-		
+
 		return new ResponseEntity<ExhibitBoard>(exhibitBoard, HttpStatus.OK);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<String> modify(@RequestPart(value="exhibitBoard") ExhibitBoard exhibitBoard, @RequestPart(value = "mainImg", required = false) MultipartFile mainImg,  @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
-		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-		
-		// 프로젝트 대표 이미지 업로드
-		if(mainImg != null) {
-			String saveFolder = imagePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			ProjectMainImg projectImg = new ProjectMainImg();
-			String originFileName = mainImg.getOriginalFilename();
-			if (!originFileName.isEmpty()) {
-				String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-				projectImg.setSaveFolder(today);
-				projectImg.setOriginFile(originFileName);
-				projectImg.setSaveFile(saveFileName);
-				mainImg.transferTo(new File(folder, saveFileName));
-			}
-			exhibitBoard.getProject().setMainImg(projectImg);		// 프로젝트 객체에 이미지 저장
-		}
-		
-		// 새로운 파일 업로드
-		if (!files[0].getOriginalFilename().equals("")) {
-			String saveFolder = filePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : files) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
+	public ResponseEntity<String> modify(@RequestPart(value = "exhibitBoard") ExhibitBoard exhibitBoard,
+			@RequestPart(value = "mainImg", required = false) MultipartFile mainImg,
+			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
+			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+		try {
+			String today = new SimpleDateFormat("yyMMdd").format(new Date());
+
+			// 프로젝트 대표 이미지 업로드
+			if (mainImg != null) {
+				String saveFolder = imagePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				ProjectMainImg projectImg = new ProjectMainImg();
+				String originFileName = mainImg.getOriginalFilename();
 				if (!originFileName.isEmpty()) {
 					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+					projectImg.setSaveFolder(today);
+					projectImg.setOriginFile(originFileName);
+					projectImg.setSaveFile(saveFileName);
+					mainImg.transferTo(new File(folder, saveFileName));
 				}
-				fileInfos.add(fileInfo);
+				exhibitBoard.getProject().setMainImg(projectImg); // 프로젝트 객체에 이미지 저장
 			}
-			exhibitBoard.setFileList(fileInfos);
-		}
-		
-		
-		// 새로운 이미지 업로드
-		if (!images[0].getOriginalFilename().equals("")) {
-			String saveFolder = imagePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : images) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
-				if (!originFileName.isEmpty()) {
-					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+
+			// 새로운 파일 업로드
+			if (!files[0].getOriginalFilename().equals("")) {
+				String saveFolder = filePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
 				}
-				fileInfos.add(fileInfo);
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : files) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
+				}
+				exhibitBoard.setFileList(fileInfos);
 			}
-			exhibitBoard.setImageList(fileInfos);
-		}
-		
-		// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 수정
-		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath) && exhibitBoardService.modifyArticle(exhibitBoard)) {
-			exhibitBoard.getProject().setBid(exhibitBoard.getBid());
+
+			// 새로운 이미지 업로드
+			if (!images[0].getOriginalFilename().equals("")) {
+				String saveFolder = imagePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : images) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
+				}
+				exhibitBoard.setImageList(fileInfos);
+			}
+
+			// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 수정
+			projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath);
+			exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath);
+			exhibitBoardService.modifyArticle(exhibitBoard);
+
 			// 프로젝트 수정
-			if(projectService.modifyProject(exhibitBoard.getProject()))
-				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			exhibitBoard.getProject().setBid(exhibitBoard.getBid());
+			projectService.modifyProject(exhibitBoard.getProject());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
+
 		}
 	}
-	
+
 	@DeleteMapping("/{bid}")
-	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
-		// ariticle 정보 가져오기
-		ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
-		
-		// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 삭제
-		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath) && exhibitBoardService.deleteArticle(bid)) {
+	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
+		try {
+			// ariticle 정보 가져오기
+			ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
+
+			// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 삭제
+			projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath);
+			exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath);
+			exhibitBoardService.deleteArticle(bid);
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
+
 		}
 	}
-	
+
 	@PostMapping("/like")
 	public ResponseEntity<String> clickLike(@RequestBody BoardLike boardLike) throws Exception {
-		if(exhibitBoardService.clickLike(boardLike)) {
+		try {
+			exhibitBoardService.clickLike(boardLike);
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
 }
