@@ -87,6 +87,21 @@
 		where bid = #{bid}
 	</update>
 	
+	<select id="getLike" parameterType="boardLike" resultType="int">
+		select count(*) from board_like
+		where bid = #{bid} and uid = #{uid}
+	</select>
+	
+	<insert id="likeTrue" parameterType="boardLike">
+		insert into board_like (bid, uid)
+		values (#{bid}, #{uid})
+	</insert>
+	
+	<delete id="likeFalse" parameterType="boardLike">
+		delete from board_like
+		where bid = #{bid} and uid = #{uid}
+	</delete>
+	
 	<resultMap type="board" id="baseBoardMap">
 		<id column="bid" property="bid"/>
 		<result column="uid" property="uid"/>

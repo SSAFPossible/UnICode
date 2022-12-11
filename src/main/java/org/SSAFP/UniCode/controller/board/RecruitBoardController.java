@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.dto.Language;
 import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
@@ -219,6 +220,15 @@ public class RecruitBoardController {
 	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
 		// 기존 파일 삭제 & article 삭제
 		if(recruitBoardService.deleteFileList(bid, filePath, imagePath) && recruitBoardService.deleteArticle(bid)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	@PostMapping("/like")
+	public ResponseEntity<String> clickLike(@RequestBody BoardLike boardLike) throws Exception {
+		if(recruitBoardService.clickLike(boardLike)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);

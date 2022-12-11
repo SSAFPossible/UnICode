@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,17 @@ public class BoardServiceImpl implements BoardService {
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	@Transactional
+	public boolean clickLike(BoardLike boardLike) throws Exception {
+		if(boardRepo.getLike(boardLike) > 0) {
+			boardRepo.likeFalse(boardLike);
+		} else {
+			boardRepo.likeTrue(boardLike);
 		}
 		return true;
 	}
