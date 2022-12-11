@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExhibitBoard extends Board {
-	private int like_cnt;				// 좋아요
+	private int likeCnt;				// 좋아요
 	private Project project;			// 프로젝트
 }
