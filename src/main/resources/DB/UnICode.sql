@@ -196,13 +196,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `UnICode`.`file_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`project_img` (
-  `piid` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `UnICode`.`project_main_img` (
+  `pmid` INT NOT NULL AUTO_INCREMENT,
   `pid` INT NULL,
   `save_folder` VARCHAR(45) NULL,
   `origin_file` VARCHAR(45) NULL,
   `save_file` VARCHAR(45) NULL,
-  PRIMARY KEY (`piid`),
+  PRIMARY KEY (`pmid`),
     FOREIGN KEY (`pid`)
     REFERENCES `UnICode`.`project` (`pid`)
     ON DELETE CASCADE
