@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/free")
 @Slf4j
 public class FreeBoardController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(FreeBoardController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
@@ -43,158 +43,176 @@ public class FreeBoardController {
 
 	@Value("${file.path.upload-files}")
 	String filePath;
-	
+
 	@Value("${file.path.upload-images}")
 	String imagePath;
-	
+
 	@PostMapping()
-	public ResponseEntity<String> write(@RequestPart(value="freeBoard") Board freeBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
-		// 파일 업로드
-		if (files != null) {
-			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = filePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : files) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
-				if (!originFileName.isEmpty()) {
-					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+	public ResponseEntity<String> write(@RequestPart(value = "freeBoard") Board freeBoard,
+			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
+			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+
+		try {
+			// 파일 업로드
+			if (!files[0].getOriginalFilename().equals("")) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = filePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
 				}
-				fileInfos.add(fileInfo);
-			}
-			freeBoard.setFileList(fileInfos);
-		}
-		
-		// 이미지 업로드
-		if (images != null) {
-			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = imagePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : images) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
-				if (!originFileName.isEmpty()) {
-					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : files) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
 				}
-				fileInfos.add(fileInfo);
+				freeBoard.setFileList(fileInfos);
 			}
-			freeBoard.setImageList(fileInfos);
-		}
-		
-		if(freeBoardService.writeArticle(freeBoard)) {
+
+			// 이미지 업로드
+			if (!images[0].getOriginalFilename().equals("")) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = imagePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : images) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
+				}
+				freeBoard.setImageList(fileInfos);
+			}
+
+			// 글 작성
+			freeBoardService.writeArticle(freeBoard);
+
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<Board>> getAllArticle() throws Exception{
+	public ResponseEntity<List<Board>> getAllArticle() throws Exception {
 		return new ResponseEntity<List<Board>>(freeBoardService.getAllArticle("free"), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{bid}")
-	public ResponseEntity<?> getArticle(@PathVariable("bid") int bid) throws Exception{
+	public ResponseEntity<?> getArticle(@PathVariable("bid") int bid) throws Exception {
 		Board registeredFreeArticle = freeBoardService.getArticle(bid);
-		if(registeredFreeArticle == null) {
+		if (registeredFreeArticle == null) {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<Board>(registeredFreeArticle, HttpStatus.OK);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<String> modify(@RequestPart(value="freeBoard") Board freeBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception{
-		// 기존 파일 삭제
-		freeBoardService.deleteFileList(freeBoard.getBid(), filePath, imagePath);
-		
-		// 새로운 파일 업로드
-		if (files != null) {
-			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = filePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : files) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
-				if (!originFileName.isEmpty()) {
-					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+	public ResponseEntity<String> modify(@RequestPart(value = "freeBoard") Board freeBoard,
+			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
+			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+
+		try {
+			// 기존 파일 삭제
+			freeBoardService.deleteFileList(freeBoard.getBid(), filePath, imagePath);
+
+			// 새로운 파일 업로드
+			if (!files[0].getOriginalFilename().equals("")) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = filePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
 				}
-				fileInfos.add(fileInfo);
-			}
-			freeBoard.setFileList(fileInfos);
-		}
-		
-		
-		// 새로운 이미지 업로드
-		if (images != null) {
-			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = imagePath + File.separator + today;
-			
-			File folder = new File(saveFolder);
-			if (!folder.exists()) {
-				folder.mkdirs();
-			}
-			
-			List<FileInfo> fileInfos = new ArrayList<FileInfo>();
-			for (MultipartFile mfile : images) {
-				FileInfo fileInfo = new FileInfo();
-				String originFileName = mfile.getOriginalFilename();
-				if (!originFileName.isEmpty()) {
-					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
-					fileInfo.setSaveFolder(today);
-					fileInfo.setOriginFile(originFileName);
-					fileInfo.setSaveFile(saveFileName);
-					mfile.transferTo(new File(folder, saveFileName));
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : files) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
 				}
-				fileInfos.add(fileInfo);
+				freeBoard.setFileList(fileInfos);
 			}
-			freeBoard.setImageList(fileInfos);
-		}
-		
-		// 기존 파일 삭제 & article 수정
-		if(freeBoardService.deleteFileList(freeBoard.getBid(), filePath, imagePath) && freeBoardService.modifyArticle(freeBoard)) {
+
+			// 새로운 이미지 업로드
+			if (!images[0].getOriginalFilename().equals("")) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = imagePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+				for (MultipartFile mfile : images) {
+					FileInfo fileInfo = new FileInfo();
+					String originFileName = mfile.getOriginalFilename();
+					if (!originFileName.isEmpty()) {
+						String saveFileName = System.nanoTime()
+								+ originFileName.substring(originFileName.lastIndexOf('.'));
+						fileInfo.setSaveFolder(today);
+						fileInfo.setOriginFile(originFileName);
+						fileInfo.setSaveFile(saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileInfo);
+				}
+				freeBoard.setImageList(fileInfos);
+			}
+
+			// 기존 파일 삭제 & article 수정
+			freeBoardService.deleteFileList(freeBoard.getBid(), filePath, imagePath);
+			freeBoardService.modifyArticle(freeBoard);
+
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
-	
+
 	@DeleteMapping("/{bid}")
-	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
-		// 기존 파일 삭제 & article 삭제
-		if(freeBoardService.deleteFileList(bid, filePath, imagePath) && freeBoardService.deleteArticle(bid)) {
+	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
+		try {
+			// 기존 파일 삭제 & article 삭제
+			freeBoardService.deleteFileList(bid, filePath, imagePath);
+			freeBoardService.deleteArticle(bid);
+			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
 }

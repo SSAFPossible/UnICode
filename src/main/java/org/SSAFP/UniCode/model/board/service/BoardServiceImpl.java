@@ -27,7 +27,10 @@ public class BoardServiceImpl implements BoardService {
 		if (write && board.getImageList() != null) {
 			write = boardRepo.uploadImageList(board);
 		}
-		return write;
+		if(!write) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
@@ -40,13 +43,20 @@ public class BoardServiceImpl implements BoardService {
 		if(modify && board.getImageList() != null) {
 			modify = boardRepo.uploadImageList(board);
 		}
-		return modify;
+		if(!modify) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean deleteArticle(int bid) throws Exception {
-		return boardRepo.deleteArticle(bid);
+		boolean delete = boardRepo.deleteArticle(bid);
+		if(!delete) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
@@ -76,7 +86,7 @@ public class BoardServiceImpl implements BoardService {
 			boardRepo.deleteFileList(bid);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return false;
+			throw new Exception();
 		}
 		return true;
 	}
@@ -84,6 +94,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public boolean clickLike(BoardLike boardLike) throws Exception {
+		// uid, bid 확인 후 Exception 처리 필요
 		if(boardRepo.getLike(boardLike) > 0) {
 			boardRepo.likeFalse(boardLike);
 			return false;

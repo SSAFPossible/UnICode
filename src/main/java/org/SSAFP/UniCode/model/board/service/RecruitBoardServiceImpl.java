@@ -26,16 +26,28 @@ public class RecruitBoardServiceImpl extends BoardServiceImpl {
 	
 	@Transactional
 	public boolean modifyRecruitInfo(RecruitBoard recruitBoard) throws Exception {
-		return recruitBoardRepo.modifyRecruitInfo(recruitBoard);
+		boolean modify = recruitBoardRepo.modifyRecruitInfo(recruitBoard);
+		if(!modify) {
+			throw new Exception();
+		}
+		return true;
 	}
 	
 	@Transactional
 	public boolean writeTag(Map<String, Object> tag) throws Exception {
-		return recruitBoardRepo.writeTag(tag);
+		boolean write = recruitBoardRepo.writeTag(tag);
+		if(!write) {
+			throw new Exception();
+		}
+		return true;
 	}
 	
 	@Transactional
 	public boolean deleteTag(int bid) throws Exception {
-		return recruitBoardRepo.deleteTag(bid);
+		boolean delete = recruitBoardRepo.deleteTag(bid);
+		if(!delete) {
+			throw new Exception();
+		}
+		return true;
 	}
 }
