@@ -2,6 +2,7 @@ package org.SSAFP.UniCode.model.board.repo;
 
 import java.util.List;
 
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
@@ -28,6 +29,10 @@ public interface ExhibitBoardRepo {
 	public List<FileInfo> getFileList(int bid) throws Exception;
 
 	public boolean updateHit(int bid) throws Exception;
+
+	public int getLike(BoardLike boardLike);
 	
-//	public boolean clickLike(int bid) throws Exception;
+	public boolean likeTrue(BoardLike boardLike) throws Exception;
+	
+	public boolean likeFalse(BoardLike boardLike) throws Exception;
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
@@ -257,6 +258,15 @@ public class ExhibitBoardController {
 		
 		// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 삭제
 		if(projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath) && exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath) && exhibitBoardService.deleteArticle(bid)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	@PostMapping("/like")
+	public ResponseEntity<String> clickLike(@RequestBody BoardLike boardLike) throws Exception {
+		if(exhibitBoardService.clickLike(boardLike)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);

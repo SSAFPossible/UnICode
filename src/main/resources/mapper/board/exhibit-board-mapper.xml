@@ -104,6 +104,21 @@
 		where bid = #{bid}
 	</select>
 	
+	<select id="getLike" parameterType="boardLike" resultType="int">
+		select count(*) from board_like
+		where bid = #{bid} and uid = #{uid}
+	</select>
+	
+	<insert id="likeTrue" parameterType="boardLike">
+		insert into board_like (bid, uid)
+		values (#{bid}, #{uid})
+	</insert>
+	
+	<delete id="likeFalse" parameterType="boardLike">
+		delete from board_like
+		where bid = #{bid} and uid = #{uid}
+	</delete>
+	
 	<select id="fileList" resultMap="baseFileInfoMap">
 		select * from file_info
 		where type="file" and bid = #{bid}

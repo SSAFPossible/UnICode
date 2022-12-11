@@ -3,6 +3,7 @@ package org.SSAFP.UniCode.model.board.service;
 import java.io.File;
 import java.util.List;
 
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
@@ -76,8 +77,14 @@ public class ExhibitBoardServiceImpl {
 		}
 		return true;
 	}
-//
-//	public boolean clickLike(int bid) throws Exception{
-//		
-//	}
+
+	@Transactional
+	public boolean clickLike(BoardLike boardLike) throws Exception {
+		if(exhibitBoardRepo.getLike(boardLike) > 0) {
+			exhibitBoardRepo.likeFalse(boardLike);
+		} else {
+			exhibitBoardRepo.likeTrue(boardLike);
+		}
+		return true;
+	}
 }
