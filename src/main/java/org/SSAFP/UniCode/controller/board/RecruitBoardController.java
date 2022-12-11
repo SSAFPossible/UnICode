@@ -4,7 +4,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
@@ -42,6 +44,7 @@ public class RecruitBoardController {
 	private static final String FAIL = "fail";
 	
 	@Autowired
+	@Qualifier("recruitBoardServiceImpl")
 	private RecruitBoardServiceImpl recruitBoardService; // 인원 모집 게시판 기능 Service
 
 	@Value("${file.path.upload-files}")
@@ -51,7 +54,7 @@ public class RecruitBoardController {
 	String imagePath;
 	
 	@PostMapping()
-	public ResponseEntity<String> write(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
+	public ResponseEntity<String> write(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value="language") Language language, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 		// 파일 업로드
 		if (files != null) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -77,7 +80,6 @@ public class RecruitBoardController {
 			}
 			recruitBoard.setFileList(fileInfos);
 		}
-		
 		
 		// 이미지 업로드
 		if (images != null) {
@@ -105,8 +107,21 @@ public class RecruitBoardController {
 			recruitBoard.setImageList(fileInfos);
 		}
 		
+		// 글 작성
 		if(recruitBoardService.writeArticle(recruitBoard) && recruitBoardService.modifyRecruitInfo(recruitBoard)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			// 태그 등록
+			if(language.getName().size() > 0) {
+				Map<String, Object> tag = new HashMap<>();
+				tag.put("bid", recruitBoard.getBid());
+				tag.put("language", language);
+				if(recruitBoardService.writeTag(tag)) {
+					return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+				} else {
+					return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+				}
+			} else {
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			}
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 		}
@@ -124,7 +139,7 @@ public class RecruitBoardController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<String> modify(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception{
+	public ResponseEntity<String> modify(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value="language") Language language, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception{
 		// 새로운 파일 업로드
 		if (files != null) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -150,7 +165,6 @@ public class RecruitBoardController {
 			}
 			recruitBoard.setFileList(fileInfos);
 		}
-		
 		
 		// 새로운 이미지 업로드
 		if (images != null) {
@@ -178,9 +192,23 @@ public class RecruitBoardController {
 			recruitBoard.setImageList(fileInfos);
 		}
 		
-		// 기존 파일 삭제 & article 수정
-		if(recruitBoardService.deleteFileList(recruitBoard.getBid(), filePath, imagePath) && recruitBoardService.modifyArticle(recruitBoard) && recruitBoardService.modifyRecruitInfo(recruitBoard)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		// 기존 파일 삭제 & article 수정 & tag 수정
+		if(recruitBoardService.deleteFileList(recruitBoard.getBid(), filePath, imagePath) 
+				&& recruitBoardService.modifyArticle(recruitBoard) && recruitBoardService.modifyRecruitInfo(recruitBoard)
+				&& recruitBoardService.deleteTag(recruitBoard.getBid())) {
+			// 새로운 태그 등록
+			if(language.getName().size() > 0) {
+				Map<String, Object> tag = new HashMap<>();
+				tag.put("bid", recruitBoard.getBid());
+				tag.put("language", language);
+				if(recruitBoardService.writeTag(tag)) {
+					return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+				} else {
+					return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+				}
+			} else {
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			}
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 		}
@@ -188,8 +216,8 @@ public class RecruitBoardController {
 	
 	@DeleteMapping("/{bid}")
 	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
-		// 기존 파일 삭제 & article 삭제
-		if(recruitBoardService.deleteFileList(bid, filePath, imagePath) && recruitBoardService.deleteArticle(bid)) {
+		// 기존 파일 삭제 & tag 삭제 & article 삭제
+		if(recruitBoardService.deleteFileList(bid, filePath, imagePath) && recruitBoardService.deleteTag(bid) && recruitBoardService.deleteArticle(bid)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);

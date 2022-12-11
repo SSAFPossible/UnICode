@@ -7,12 +7,10 @@ import org.SSAFP.UniCode.model.board.dto.StudyBoardParam;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.SSAFP.UniCode.model.board.repo.StudyBoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Primary
 public class StudyBoardServiceImpl extends BoardServiceImpl {
 
 	@Autowired
