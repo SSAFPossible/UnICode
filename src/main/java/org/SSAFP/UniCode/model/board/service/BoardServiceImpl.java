@@ -20,10 +20,10 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean writeArticle(Board board) throws Exception {
 		boolean write = boardRepo.writeArticle(board);
-		if(write && board.getFileList().size() > 0) {
+		if(write && board.getFileList() != null) {
 			write = boardRepo.uploadFileList(board);
 		}
-		if (write && board.getImageList().size() > 0) {
+		if (write && board.getImageList() != null) {
 			write = boardRepo.uploadImageList(board);
 		}
 		return write;
@@ -33,8 +33,11 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean modifyArticle(Board board) throws Exception {
 		boolean modify = boardRepo.modifyArticle(board);
-		if(modify && board.getFileList().size() > 0) {
-			modify = boardRepo.deleteFileList(board) && boardRepo.uploadFileList(board) && boardRepo.uploadImageList(board);
+		if(modify && board.getFileList() != null) {
+			modify = boardRepo.uploadFileList(board);
+		}
+		if(modify && board.getImageList() != null) {
+			modify = boardRepo.uploadImageList(board);
 		}
 		return modify;
 	}
@@ -69,6 +72,7 @@ public class BoardServiceImpl implements BoardService {
 					file.delete();
 				}
 			}
+			boardRepo.deleteFileList(bid);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;

@@ -61,7 +61,7 @@
 		</foreach>
 	</insert>
 	
-	<delete id="deleteFileList" parameterType="board">
+	<delete id="deleteFileList" parameterType="int">
 		delete from file_info
 		where bid = #{bid}
 	</delete>

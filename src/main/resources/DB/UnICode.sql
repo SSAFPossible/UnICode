@@ -54,9 +54,21 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
     FOREIGN KEY (`uid`)
     REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`board_like`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`board_like` (
+  `bid` INT NOT NULL,
+  `uid` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`bid`, `uid`),
+  FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY (`bcid`)
-    REFERENCES `UnICode`.`board_category` (`bcid`)
+  FOREIGN KEY (`uid`) REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -97,8 +109,8 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`b_develop` (
   CONSTRAINT `board_DEVELOP_BID`
     FOREIGN KEY (`bid`)
     REFERENCES `UnICode`.`board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `LANGUAGE_DEVELOP_LID`
     FOREIGN KEY (`lid`)
     REFERENCES `UnICode`.`language` (`lid`)
@@ -137,17 +149,6 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
     REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `UnICode`.`board_category`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`board_category` (
-  `bcid` VARCHAR(45) NOT NULL,
-  `main_class` INT NULL,
-  `middle_class` INT NULL,
-  PRIMARY KEY (`bcid`))
 ENGINE = InnoDB;
 
 

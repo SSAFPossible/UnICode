@@ -24,7 +24,7 @@ public interface BoardRepo {
 	
 	public boolean uploadImageList(Board board) throws Exception;
 
-	public boolean deleteFileList(Board board) throws Exception;
+	public boolean deleteFileList(int bid) throws Exception;
 
 	public List<FileInfo> getFileList(int bid) throws Exception;
 	

@@ -56,7 +56,7 @@ public class RecruitBoardController {
 	@PostMapping()
 	public ResponseEntity<String> write(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value="language") Language language, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 		// 파일 업로드
-		if (files != null) {
+		if (!files[0].getOriginalFilename().equals("")) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
 			String saveFolder = filePath + File.separator + today;
 			
@@ -82,7 +82,7 @@ public class RecruitBoardController {
 		}
 		
 		// 이미지 업로드
-		if (images != null) {
+		if (!images[0].getOriginalFilename().equals("")) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
 			String saveFolder = imagePath + File.separator + today;
 			
@@ -141,7 +141,8 @@ public class RecruitBoardController {
 	@PutMapping
 	public ResponseEntity<String> modify(@RequestPart(value="recruitBoard") RecruitBoard recruitBoard, @RequestPart(value="language") Language language, @RequestPart(value = "upfile", required = false) MultipartFile[] files, @RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception{
 		// 새로운 파일 업로드
-		if (files != null) {
+		if (!files[0].getOriginalFilename().equals("")) {
+			System.out.println("들어왔음");
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
 			String saveFolder = filePath + File.separator + today;
 			
@@ -167,7 +168,7 @@ public class RecruitBoardController {
 		}
 		
 		// 새로운 이미지 업로드
-		if (images != null) {
+		if (!images[0].getOriginalFilename().equals("")) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
 			String saveFolder = imagePath + File.separator + today;
 			
@@ -216,8 +217,8 @@ public class RecruitBoardController {
 	
 	@DeleteMapping("/{bid}")
 	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception{
-		// 기존 파일 삭제 & tag 삭제 & article 삭제
-		if(recruitBoardService.deleteFileList(bid, filePath, imagePath) && recruitBoardService.deleteTag(bid) && recruitBoardService.deleteArticle(bid)) {
+		// 기존 파일 삭제 & article 삭제
+		if(recruitBoardService.deleteFileList(bid, filePath, imagePath) && recruitBoardService.deleteArticle(bid)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
