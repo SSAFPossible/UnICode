@@ -86,10 +86,11 @@ public class BoardServiceImpl implements BoardService {
 	public boolean clickLike(BoardLike boardLike) throws Exception {
 		if(boardRepo.getLike(boardLike) > 0) {
 			boardRepo.likeFalse(boardLike);
+			return false;
 		} else {
 			boardRepo.likeTrue(boardLike);
+			return true;
 		}
-		return true;
 	}
 }
 

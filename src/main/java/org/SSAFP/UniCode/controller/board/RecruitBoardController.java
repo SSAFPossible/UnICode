@@ -228,10 +228,11 @@ public class RecruitBoardController {
 	
 	@PostMapping("/like")
 	public ResponseEntity<String> clickLike(@RequestBody BoardLike boardLike) throws Exception {
-		if(recruitBoardService.clickLike(boardLike)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		boolean like = recruitBoardService.clickLike(boardLike);
+		if(like) { // 좋아요 등록
+			return new ResponseEntity<String>("true", HttpStatus.OK);
+		} else { // 좋아요 취소
+			return new ResponseEntity<String>("false", HttpStatus.OK);
 		}
 	}
 }
