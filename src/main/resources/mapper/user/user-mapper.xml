@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.SSAFP.UniCode.model.user.repo.UserRepo">
+	
+	<insert id="regist">
+		insert into user(uid, password, name, email, profile, access_img, created_time) value (#{uid}, #{password}, #{name}, #{email}, #{profile}, #{accessImg}, now())
+	</insert>
+	
+	<select id="siginin" parameterType="hashMap" resultType="int">
+		select count(*) from user where uid = #{id} and password = #{password}
+	</select>
+	
+	<select id="getInfo" parameterType="string" resultType="user">
+		select * from user where uid = #{id}
+	</select>
+	
+	<update id="putInfo" parameterType="user">
+		update user set name = #{name}, email = #{email}, profile = #{profile}, access_img = #{accessImg} where uid = #{uid}
+	</update>
+	
+	<delete id="deleteInfo" parameterType="string">
+		delete from user where uid = #{uid}
+	</delete>
+	
+	<update id="saveRefreshToken" parameterType="hashMap">
+		update user set refreshToken = #{refreshToken} where uid = #{id}
+	</update>
+	
+	<select id="getRefreshToken" parameterType="string" resultType="string">
+		select refreshToken from user where uid = #{id}
+	</select>
+</mapper>
