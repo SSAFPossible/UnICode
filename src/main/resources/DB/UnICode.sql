@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`user` (
   `authority` TINYINT NULL,
   `email` VARCHAR(45) NULL,
   `github` VARCHAR(45) NULL,
+  `refreshToken` VARCHAR(45) NULL,
   PRIMARY KEY (`uid`))
 ENGINE = InnoDB;
 
