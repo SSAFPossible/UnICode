@@ -136,9 +136,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   INDEX `user_COMMENT_ID_idx` (`uid` ASC) VISIBLE,
   CONSTRAINT `GROUP_NUM_CID`
     FOREIGN KEY (`parent_cid`)
-    REFERENCES `UnICode`.`comment` (`cid`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    REFERENCES `UnICode`.`comment` (`cid`),
   CONSTRAINT `board_COMMENT_BID`
     FOREIGN KEY (`bid`)
     REFERENCES `UnICode`.`board` (`bid`)
@@ -146,9 +144,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
     ON UPDATE CASCADE,
   CONSTRAINT `user_COMMENT_ID`
     FOREIGN KEY (`uid`)
-    REFERENCES `UnICode`.`user` (`uid`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    REFERENCES `UnICode`.`user` (`uid`))
 ENGINE = InnoDB;
 
 
