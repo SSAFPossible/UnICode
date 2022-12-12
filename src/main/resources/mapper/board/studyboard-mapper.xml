@@ -25,7 +25,7 @@
 			and uid=#{uid}
 		</if>
 		<if test="sortLike==true">
-			order by `like` desc
+			order by like_cnt desc
 		</if>
 		<if test="sortLike!=true">
 			order by created_time
@@ -34,8 +34,8 @@
 
 	<update id="increaseLike" parameterType="int">
 		update board set
-		`like` =
-		`like` + 1 where bid=#{bid}
+		like_cnt =
+		like_cnt + 1 where bid=#{bid}
 	</update>
 
 	<select id="getStudyBoard" parameterType="int"
@@ -64,7 +64,7 @@
 		<result column="hit" property="hit" />
 		<result column="created_time" property="createdTime" />
 		<result column="updated_time" property="updatedTime" />
-		<result column="like" property="like" />
+		<result column="like_cnt" property="like" />
 	</resultMap>
 
 	<resultMap type="studyBoard" id="baseStudyBoardFileMap"
