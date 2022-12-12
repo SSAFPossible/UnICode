@@ -1,9 +1,12 @@
 package org.SSAFP.UniCode.model.board.service;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BoardServiceImpl implements BoardService {
-	
+
 	@Autowired
 	private BoardRepo boardRepo;
 
@@ -20,29 +23,43 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean writeArticle(Board board) throws Exception {
 		boolean write = boardRepo.writeArticle(board);
-		if(write && board.getFileList().size() > 0) {
+		
+		if (write && board.getFileList() != null) {
 			write = boardRepo.uploadFileList(board);
 		}
-		if (write && board.getImageList().size() > 0) {
+		if (write && board.getImageList() != null) {
 			write = boardRepo.uploadImageList(board);
 		}
-		return write;
+		if (!write) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean modifyArticle(Board board) throws Exception {
 		boolean modify = boardRepo.modifyArticle(board);
-		if(modify && board.getFileList().size() > 0) {
-			modify = boardRepo.deleteFileList(board) && boardRepo.uploadFileList(board) && boardRepo.uploadImageList(board);
+		if (modify && board.getFileList() != null) {
+			modify = boardRepo.uploadFileList(board);
 		}
-		return modify;
+		if (modify && board.getImageList() != null) {
+			modify = boardRepo.uploadImageList(board);
+		}
+		if (!modify) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean deleteArticle(int bid) throws Exception {
-		return boardRepo.deleteArticle(bid);
+		boolean delete = boardRepo.deleteArticle(bid);
+		if (!delete) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
@@ -62,17 +79,40 @@ public class BoardServiceImpl implements BoardService {
 	public boolean deleteFileList(int bid, String filePath, String imagePath) throws Exception {
 		List<FileInfo> fileInfoList = boardRepo.getFileList(bid);
 		try {
-			for(FileInfo fileInfo: fileInfoList) {
-				File file = new File(filePath + File.separator + fileInfo.getSaveFolder() + File.separator + fileInfo.getSaveFile());
-				if(!file.delete()) {
-					file = new File(imagePath + File.separator + fileInfo.getSaveFolder() + File.separator + fileInfo.getSaveFile());
+			for (FileInfo fileInfo : fileInfoList) {
+				File file = new File(
+						filePath + File.separator + fileInfo.getSaveFolder() + File.separator + fileInfo.getSaveFile());
+				if (!file.delete()) {
+					file = new File(imagePath + File.separator + fileInfo.getSaveFolder() + File.separator
+							+ fileInfo.getSaveFile());
 					file.delete();
 				}
 			}
-		} catch(Exception e) {
+			boardRepo.deleteFileList(bid);
+		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			throw new Exception();
 		}
 		return true;
 	}
+
+	@Override
+	@Transactional
+	public boolean clickLike(BoardLike boardLike) throws Exception {
+		// uid, bid 확인 후 Exception 처리 필요
+		Map<String, Integer> likeInfo = new HashMap<String, Integer>();
+		likeInfo.put("bid", boardLike.getBid());
+		if (boardRepo.getLike(boardLike) > 0) {
+			boardRepo.likeFalse(boardLike);
+			likeInfo.put("num", -1);
+			boardRepo.updateLike(likeInfo);
+			return false;
+		} else {
+			boardRepo.likeTrue(boardLike);
+			likeInfo.put("num", 1);
+			boardRepo.updateLike(likeInfo);
+			return true;
+		}
+	}
+	
 }

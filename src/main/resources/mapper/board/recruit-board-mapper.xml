@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.RecruitBoardRepo">
+
+	<select id="getRecruitArticle" parameterType="int" resultMap="baseBoardFileMap">
+		select * from board
+		where bid = #{bid}
+	</select>
+
+	<select id="getRecruitAllArticle" parameterType="language" resultMap="baseRecruitBoardMap">
+		select * from board
+		where
+		<if test="nameSize > 0">
+			bid in (select bid from b_develop
+							where lid in (select lid from language 
+							where name in
+							<foreach item="lan" collection="name" open="(" close=")" separator=",">
+	    						#{lan}
+	   						</foreach>
+					)) and	
+		</if>
+		bcid = "recruit"
+	</select>
+	
+	<update id="modifyRecruitInfo" parameterType="recruitBoard">
+		update board
+		<set>
+			<if test="open != null">
+				open = #{open},
+			</if>
+			<if test="maxMember != null">
+				max_member = #{maxMember},
+			</if>
+		</set>
+		where bid = #{bid}
+	</update>
+	
+	<insert id="writeTag" parameterType="map">
+		insert into b_develop (bid, lid) 
+		values 
+		<foreach item="lan" collection="language.name" separator=",">
+			(#{bid}, (select lid from language where name in (#{lan})))
+		</foreach>
+	</insert>
+	
+	<delete id="deleteTag" parameterType="int">
+		delete from b_develop
+		where bid = #{bid}
+	</delete>
+		
+	<select id="getFileList" parameterType="int" resultMap="baseFileInfoMap">
+		select * from file_info
+		where bid = #{bid}
+	</select>
+	
+	<select id="fileList" resultMap="baseFileInfoMap">
+		select * from file_info
+		where type="file" and bid = #{bid}
+	</select>
+	
+	<select id="imageList" resultMap="baseFileInfoMap">
+		select * from file_info
+		where type="image" and bid = #{bid}
+	</select>
+
+	<resultMap type="recruitBoard" id="baseRecruitBoardMap">
+		<id column="bid" property="bid"/>
+		<result column="uid" property="uid"/>
+		<result column="bcid" property="bcid"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="created_time" property="createdTime"/>
+		<result column="updated_time" property="updatedTime"/>
+		<result column="open" property="open" />
+		<result column="max_member" property="maxMember" />
+		<result column="like_cnt" property="likeCnt" />
+	</resultMap>
+	
+	<resultMap type="recruitBoard" id="baseBoardFileMap" extends="baseRecruitBoardMap">
+		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
+		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
+	</resultMap>
+	
+	<resultMap type="fileInfo" id="baseFileInfoMap">
+		<id column="fid" property="fid"/>
+		<result column="bid" property="bid"/>
+		<result column="type" property="type"/>
+		<result column="save_folder" property="saveFolder"/>
+		<result column="origin_file" property="originFile"/>
+		<result column="save_file" property="saveFile"/>
+	</resultMap>
+</mapper>

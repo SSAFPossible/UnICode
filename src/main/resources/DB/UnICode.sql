@@ -55,9 +55,21 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
     FOREIGN KEY (`uid`)
     REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`board_like`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`board_like` (
+  `bid` INT NOT NULL,
+  `uid` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`bid`, `uid`),
+  FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY (`bcid`)
-    REFERENCES `UnICode`.`board_category` (`bcid`)
+  FOREIGN KEY (`uid`) REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -98,8 +110,8 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`b_develop` (
   CONSTRAINT `board_DEVELOP_BID`
     FOREIGN KEY (`bid`)
     REFERENCES `UnICode`.`board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `LANGUAGE_DEVELOP_LID`
     FOREIGN KEY (`lid`)
     REFERENCES `UnICode`.`language` (`lid`)
@@ -115,40 +127,26 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   `cid` INT NOT NULL AUTO_INCREMENT,
   `comment` VARCHAR(45) NULL,
   `bid` INT NULL,
-  `class` INT NULL,
   `created_time` TIMESTAMP NULL,
-  `parent_cid` INT NULL,
-  `id` VARCHAR(45) NULL,
+  `updated_time` TIMESTAMP NULL,
+  `parent_cid` INT DEFAULT NULL,
+  `uid` VARCHAR(45) NULL,
+  `deleted` TINYINT DEFAULT 0,
   PRIMARY KEY (`cid`),
   INDEX `GROUP_NUM_CID_idx` (`parent_cid` ASC) VISIBLE,
   INDEX `board_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
-  INDEX `user_COMMENT_ID_idx` (`id` ASC) VISIBLE,
-  CONSTRAINT `GROUP_NUM_CID`
+  INDEX `user_COMMENT_ID_idx` (`uid` ASC) VISIBLE,
+  CONSTRAINT `comment_COMMENT_PARENT_CID`
     FOREIGN KEY (`parent_cid`)
-    REFERENCES `UnICode`.`comment` (`cid`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    REFERENCES `UnICode`.`comment` (`cid`),
   CONSTRAINT `board_COMMENT_BID`
     FOREIGN KEY (`bid`)
     REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `user_COMMENT_ID`
-    FOREIGN KEY (`id`)
-    REFERENCES `UnICode`.`user` (`uid`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `UnICode`.`board_category`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`board_category` (
-  `bcid` VARCHAR(45) NOT NULL,
-  `main_class` INT NULL,
-  `middle_class` INT NULL,
-  PRIMARY KEY (`bcid`))
+  CONSTRAINT `user_COMMENT_UID`
+    FOREIGN KEY (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`))
 ENGINE = InnoDB;
 
 
@@ -197,13 +195,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `UnICode`.`file_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `UnICode`.`project_img` (
-  `piid` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `UnICode`.`project_main_img` (
+  `pmid` INT NOT NULL AUTO_INCREMENT,
   `pid` INT NULL,
   `save_folder` VARCHAR(45) NULL,
   `origin_file` VARCHAR(45) NULL,
   `save_file` VARCHAR(45) NULL,
-  PRIMARY KEY (`piid`),
+  PRIMARY KEY (`pmid`),
     FOREIGN KEY (`pid`)
     REFERENCES `UnICode`.`project` (`pid`)
     ON DELETE CASCADE
