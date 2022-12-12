@@ -126,15 +126,16 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   `cid` INT NOT NULL AUTO_INCREMENT,
   `comment` VARCHAR(45) NULL,
   `bid` INT NULL,
-  `depth` INT NULL,
   `created_time` TIMESTAMP NULL,
-  `parent_cid` INT NULL,
+  `updated_time` TIMESTAMP NULL,
+  `parent_cid` INT DEFAULT NULL,
   `uid` VARCHAR(45) NULL,
+  `deleted` TINYINT DEFAULT 0,
   PRIMARY KEY (`cid`),
   INDEX `GROUP_NUM_CID_idx` (`parent_cid` ASC) VISIBLE,
   INDEX `board_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
   INDEX `user_COMMENT_ID_idx` (`uid` ASC) VISIBLE,
-  CONSTRAINT `GROUP_NUM_CID`
+  CONSTRAINT `comment_COMMENT_PARENT_CID`
     FOREIGN KEY (`parent_cid`)
     REFERENCES `UnICode`.`comment` (`cid`),
   CONSTRAINT `board_COMMENT_BID`
@@ -142,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
     REFERENCES `UnICode`.`board` (`bid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `user_COMMENT_ID`
+  CONSTRAINT `user_COMMENT_UID`
     FOREIGN KEY (`uid`)
     REFERENCES `UnICode`.`user` (`uid`))
 ENGINE = InnoDB;

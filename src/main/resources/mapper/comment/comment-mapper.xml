@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="org.SSAFP.UniCode.model.comment.repo.CommentRepo">
+
+	<insert id="writeFirstComment" parameterType="comment">
+		insert into comment
+		(comment, bid, created_time, updated_time, uid)
+		values
+		(#{comment},#{bid}, now(), now(), #{uid})
+	</insert>
+
+	<insert id="writeSecondComment" parameterType="comment">
+		insert into
+		comment
+		(comment, bid, created_time, updated_time, uid, parent_cid)
+		values (#{comment},#{bid}, now(), now(), #{uid}, #{parentCid})
+	</insert>
+
+
+	<update id="modifyComment" parameterType="comment">
+		update comment set
+		comment = #{comment} , updated_time = now() where cid = #{cid}
+	</update>
+
+	<update id="deleteComment">
+		update comment set deleted = 1, comment = null where
+		cid = #{cid}
+	</update>
+
+	<select id="getComment" parameterType="int"
+		resultMap="baseSecondCommentMap">
+		select * from comment where bid = #{bid} and parent_cid is
+		null order by created_time asc
+	</select>
+
+	<select id="secondComment" resultMap="baseCommentMap">
+		select * from comment where
+		parent_cid = #{cid} order by created_time asc
+	</select>
+
+	<resultMap type="comment" id="baseCommentMap">
+		<id column="cid" property="cid" />
+		<result column="comment" property="comment" />
+		<result column="bid" property="bid" />
+		<result column="created_time" property="createdTime" />
+		<result column="updated_time" property="updatedTime" />
+		<result column="parent_cid" property="parentCid" />
+		<result column="uid" property="uid" />
+		<result column="deleted" property="deleted" />
+	</resultMap>
+
+	<resultMap type="comment" id="baseSecondCommentMap"
+		extends="baseCommentMap">
+		<collection property="secondComment" javaType="list"
+			ofType="secondComment" select="secondComment" column="cid"></collection>
+	</resultMap>
+
+</mapper>
+
+
+	
