@@ -3,9 +3,9 @@ package org.SSAFP.UniCode.model.board.repo;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.context.annotation.Primary;
 
 @Mapper
 public interface BoardRepo {
@@ -24,9 +24,15 @@ public interface BoardRepo {
 	
 	public boolean uploadImageList(Board board) throws Exception;
 
-	public boolean deleteFileList(Board board) throws Exception;
+	public boolean deleteFileList(int bid) throws Exception;
 
 	public List<FileInfo> getFileList(int bid) throws Exception;
 	
 	public boolean updateHit(int bid) throws Exception;
+	
+	public int getLike(BoardLike boardLike) throws Exception;
+	
+	public boolean likeTrue(BoardLike boardLike) throws Exception;
+	
+	public boolean likeFalse(BoardLike boardLike) throws Exception;
 }

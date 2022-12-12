@@ -13,7 +13,7 @@
 		</selectKey>
 	</insert>
 	
-<!-- 	<update id="modifyArticle" parameterType="board">
+ 	<update id="modifyArticle" parameterType="exhibitBoard">
 		update board
 		<set>
 			<if test = "bcid != null">
@@ -28,18 +28,47 @@
 			updated_time = now()
 		</set>
 		where bid = #{bid}
-	</update> -->
+	</update>
 	
-	<!-- dddddddddddddddddddddddddddddddddddddddddddddd
-	d
-	d -->
-	
-<!-- 	<select id="getAllArticle" parameterType="string" resultMap="baseExhibitBoardMap">
-		select * from board
-		where bcid = #{bcid}
+	<select id="getAllExhibitArticle" parameterType="exhibitBoardParam" resultMap="baseExhibitBoardProjectMap">
+		select * from board where
+		
+		<if test="languageSize > 0">
+            bid in (
+            	select bid from project
+				where pid in (
+					select pid from p_develop
+					where lid in (
+							select lid from language 
+							where name in
+							<foreach item="lan" collection="language" open="(" close=")" separator=",">
+	    						#{lan}
+	   						</foreach>
+							)
+					)) and
+		</if>
+		
+		<if test="uid!=''">
+			bid in (
+					select bid from project
+					where pid in (
+						select pid from project_member 
+						where uid = #{uid}
+					)
+			) and
+		</if>
+		
+		bcid = "exhibit"
+		
+		<if test="sortLike==true">
+			order by like_cnt desc
+		</if>
+		<if test="sortLike!=true">
+			order by created_time
+		</if>
 	</select>
-	
-	<select id="getArticle" parameterType="int" resultMap="baseExhibitBoardMap">
+
+	<select id="getArticle" parameterType="int" resultMap="detailExhibitBoardMap">
 		select * from board
 		where bid = #{bid}
 	</select>
@@ -47,7 +76,7 @@
 	<delete id="deleteArticle" parameterType="int">
 		delete from board
 		where bid = #{bid}
-	</delete> -->
+	</delete>
 	
 	<insert id="uploadFileList" parameterType="exhibitBoard">
 		insert into file_info (bid, type, save_folder, origin_file, save_file)
@@ -65,7 +94,7 @@
 		</foreach>
 	</insert>
 
- 	<delete id="deleteFileList" parameterType="exhibitBoard">
+ 	<delete id="deleteFileList" parameterType="int">
 		delete from file_info
 		where bid = #{bid}
 	</delete>
@@ -74,6 +103,21 @@
 		select * from file_info
 		where bid = #{bid}
 	</select>
+	
+	<select id="getLike" parameterType="boardLike" resultType="int">
+		select count(*) from board_like
+		where bid = #{bid} and uid = #{uid}
+	</select>
+	
+	<insert id="likeTrue" parameterType="boardLike">
+		insert into board_like (bid, uid)
+		values (#{bid}, #{uid})
+	</insert>
+	
+	<delete id="likeFalse" parameterType="boardLike">
+		delete from board_like
+		where bid = #{bid} and uid = #{uid}
+	</delete>
 	
 	<select id="fileList" resultMap="baseFileInfoMap">
 		select * from file_info
@@ -85,11 +129,16 @@
 		where type="image" and bid = #{bid}
 	</select>
 	
-<!-- 	<update id="updateHit" parameterType="int">
+	<select id="project" resultMap="org.SSAFP.UniCode.model.board.repo.ProjectRepo.baseProjectMainImgMap">
+		select * from project p
+		where p.bid = #{bid}
+	</select>
+	
+	<update id="updateHit" parameterType="int">
 		update board
 		set hit = hit + 1
 		where bid = #{bid}
-	</update> -->
+	</update>
 	
 	<resultMap type="exhibitBoard" id="baseExhibitBoardMap">
 		<id column="bid" property="bid"/>
@@ -103,9 +152,14 @@
 		<result column="updated_time" property="updatedTime"/>
 	</resultMap>
 	
-	<resultMap type="exhibitBoard" id="baseExhibitBoardFileMap" extends="baseExhibitBoardMap">
+	<resultMap type="exhibitBoard" id="detailExhibitBoardMap" extends="baseExhibitBoardMap">
+		<association property="project" column="bid" javaType="project" select="project"/>
 		<collection property="fileList" column="bid" javaType="list" ofType="fileInfo" select="fileList"/>
 		<collection property="imageList" column="bid" javaType="list" ofType="fileInfo" select="imageList"/>
+	</resultMap>
+	
+	<resultMap type="exhibitBoard" id="baseExhibitBoardProjectMap" extends="baseExhibitBoardMap">
+		<association property="project" column="bid" javaType="project" select="project"/>
 	</resultMap>
 	
 	<resultMap type="fileInfo" id="baseFileInfoMap">

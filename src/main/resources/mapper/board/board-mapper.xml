@@ -61,7 +61,7 @@
 		</foreach>
 	</insert>
 	
-	<delete id="deleteFileList" parameterType="board">
+	<delete id="deleteFileList" parameterType="int">
 		delete from file_info
 		where bid = #{bid}
 	</delete>
@@ -86,6 +86,21 @@
 		set hit = hit + 1
 		where bid = #{bid}
 	</update>
+	
+	<select id="getLike" parameterType="boardLike" resultType="int">
+		select count(*) from board_like
+		where bid = #{bid} and uid = #{uid}
+	</select>
+	
+	<insert id="likeTrue" parameterType="boardLike">
+		insert into board_like (bid, uid)
+		values (#{bid}, #{uid})
+	</insert>
+	
+	<delete id="likeFalse" parameterType="boardLike">
+		delete from board_like
+		where bid = #{bid} and uid = #{uid}
+	</delete>
 	
 	<resultMap type="board" id="baseBoardMap">
 		<id column="bid" property="bid"/>

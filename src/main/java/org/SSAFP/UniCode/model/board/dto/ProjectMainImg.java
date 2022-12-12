@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProjectImg {
-	private int piid;
+public class ProjectMainImg {
+	private int pmid;
 	private int pid;
 	private String saveFolder;
 	private String originFile;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.SSAFP.UniCode.model.board.dto.Board;
+import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,29 +21,42 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean writeArticle(Board board) throws Exception {
 		boolean write = boardRepo.writeArticle(board);
-		if(write && board.getFileList().size() > 0) {
+		if(write && board.getFileList() != null) {
 			write = boardRepo.uploadFileList(board);
 		}
-		if (write && board.getImageList().size() > 0) {
+		if (write && board.getImageList() != null) {
 			write = boardRepo.uploadImageList(board);
 		}
-		return write;
+		if(!write) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean modifyArticle(Board board) throws Exception {
 		boolean modify = boardRepo.modifyArticle(board);
-		if(modify && board.getFileList().size() > 0) {
-			modify = boardRepo.deleteFileList(board) && boardRepo.uploadFileList(board) && boardRepo.uploadImageList(board);
+		if(modify && board.getFileList() != null) {
+			modify = boardRepo.uploadFileList(board);
 		}
-		return modify;
+		if(modify && board.getImageList() != null) {
+			modify = boardRepo.uploadImageList(board);
+		}
+		if(!modify) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean deleteArticle(int bid) throws Exception {
-		return boardRepo.deleteArticle(bid);
+		boolean delete = boardRepo.deleteArticle(bid);
+		if(!delete) {
+			throw new Exception();
+		}
+		return true;
 	}
 
 	@Override
@@ -69,11 +83,25 @@ public class BoardServiceImpl implements BoardService {
 					file.delete();
 				}
 			}
+			boardRepo.deleteFileList(bid);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return false;
+			throw new Exception();
 		}
 		return true;
+	}
+	
+	@Override
+	@Transactional
+	public boolean clickLike(BoardLike boardLike) throws Exception {
+		// uid, bid 확인 후 Exception 처리 필요
+		if(boardRepo.getLike(boardLike) > 0) {
+			boardRepo.likeFalse(boardLike);
+			return false;
+		} else {
+			boardRepo.likeTrue(boardLike);
+			return true;
+		}
 	}
 }
 
