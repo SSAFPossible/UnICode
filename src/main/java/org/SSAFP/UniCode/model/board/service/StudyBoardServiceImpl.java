@@ -26,11 +26,6 @@ public class StudyBoardServiceImpl extends BoardServiceImpl {
 	}
 	
 	@Transactional
-	public boolean increaseLike(int bid) throws Exception {
-		return studyBoardRepo.increaseLike(bid)==1;
-	}
-
-	@Transactional
 	public StudyBoard getStudyBoard(int bid) throws Exception {
 		boardRepo.updateHit(bid);
 		return studyBoardRepo.getStudyBoard(bid);
