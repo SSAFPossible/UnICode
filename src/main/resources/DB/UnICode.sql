@@ -126,14 +126,14 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   `cid` INT NOT NULL AUTO_INCREMENT,
   `comment` VARCHAR(45) NULL,
   `bid` INT NULL,
-  `class` INT NULL,
+  `depth` INT NULL,
   `created_time` TIMESTAMP NULL,
   `parent_cid` INT NULL,
-  `id` VARCHAR(45) NULL,
+  `uid` VARCHAR(45) NULL,
   PRIMARY KEY (`cid`),
   INDEX `GROUP_NUM_CID_idx` (`parent_cid` ASC) VISIBLE,
   INDEX `board_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
-  INDEX `user_COMMENT_ID_idx` (`id` ASC) VISIBLE,
+  INDEX `user_COMMENT_ID_idx` (`uid` ASC) VISIBLE,
   CONSTRAINT `GROUP_NUM_CID`
     FOREIGN KEY (`parent_cid`)
     REFERENCES `UnICode`.`comment` (`cid`)
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `user_COMMENT_ID`
-    FOREIGN KEY (`id`)
+    FOREIGN KEY (`uid`)
     REFERENCES `UnICode`.`user` (`uid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
