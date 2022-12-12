@@ -23,7 +23,6 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean writeArticle(Board board) throws Exception {
 		boolean write = boardRepo.writeArticle(board);
-		
 		if (write && board.getFileList() != null) {
 			write = boardRepo.uploadFileList(board);
 		}
@@ -99,7 +98,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public boolean clickLike(BoardLike boardLike) throws Exception {
-		// uid, bid 확인 후 Exception 처리 필요
 		Map<String, Integer> likeInfo = new HashMap<String, Integer>();
 		likeInfo.put("bid", boardLike.getBid());
 		if (boardRepo.getLike(boardLike) > 0) {
@@ -114,5 +112,4 @@ public class BoardServiceImpl implements BoardService {
 			return true;
 		}
 	}
-	
 }

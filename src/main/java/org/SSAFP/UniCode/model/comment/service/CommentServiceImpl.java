@@ -54,5 +54,4 @@ public class CommentServiceImpl implements CommentService {
 	public List<Comment> getComment(int bid) throws Exception {
 		return commentRepo.getComment(bid);
 	}
-
 }

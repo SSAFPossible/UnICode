@@ -8,11 +8,11 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface StudyBoardRepo {
+	
 	public List<StudyBoard> getAllStudyBoard(StudyBoardParam studyBoardParam) throws Exception;
 
 	public int increaseLike(int bid) throws Exception;
 
 	public StudyBoard getStudyBoard(int bid) throws Exception;
-
 }
 

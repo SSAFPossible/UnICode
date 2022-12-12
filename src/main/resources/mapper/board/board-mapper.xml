@@ -6,12 +6,10 @@
 <mapper namespace="org.SSAFP.UniCode.model.board.repo.BoardRepo">
 
 	<insert id="writeArticle" parameterType="board">
-		insert into board (uid, bcid, title, content, created_time,
-		updated_time, hit)
+		insert into board (uid, bcid, title, content, created_time, updated_time, hit)
 		values(#{uid}, #{bcid}, #{title}, #{content}, now(), now(), 0)
 		<selectKey resultType="int" keyProperty="bid" order="AFTER">
-			select
-			last_insert_id()
+			select last_insert_id()
 		</selectKey>
 	</insert>
 
@@ -32,30 +30,26 @@
 		where bid = #{bid}
 	</update>
 
-	<select id="getAllArticle" parameterType="string"
-		resultMap="baseBoardMap">
+	<select id="getAllArticle" parameterType="string" resultMap="baseBoardMap">
 		select * from board
 		where bcid = #{bcid}
 	</select>
 
-	<select id="getArticle" parameterType="int"
-		resultMap="baseBoardFileMap">
+	<select id="getArticle" parameterType="int" resultMap="baseBoardFileMap">
 		select * from board
 		where bid = #{bid}
 	</select>
 
 	<delete id="deleteArticle" parameterType="int">
 		delete from board
-		where
-		bid = #{bid}
+		where bid = #{bid}
 	</delete>
 
 	<insert id="uploadFileList" parameterType="board">
 		insert into file_info (bid, type, save_folder, origin_file, save_file)
 		values
 		<foreach collection="fileList" item="file" separator=" , ">
-			(#{bid},
-			"file", #{file.saveFolder}, #{file.originFile}, #{file.saveFile})
+			(#{bid}, "file", #{file.saveFolder}, #{file.originFile}, #{file.saveFile})
 		</foreach>
 	</insert>
 
@@ -63,8 +57,7 @@
 		insert into file_info (bid, type, save_folder, origin_file, save_file)
 		values
 		<foreach collection="imageList" item="file" separator=",">
-			(#{bid}, "image", #{file.saveFolder}, #{file.originFile},
-			#{file.saveFile})
+			(#{bid}, "image", #{file.saveFolder}, #{file.originFile}, #{file.saveFile})
 		</foreach>
 	</insert>
 
@@ -81,20 +74,18 @@
 
 	<select id="fileList" resultMap="baseFileInfoMap">
 		select * from file_info
-		where
-		type="file" and bid = #{bid}
+		where type = "file" and bid = #{bid}
 	</select>
 
 	<select id="imageList" resultMap="baseFileInfoMap">
 		select * from file_info
 		where
-		type="image" and bid = #{bid}
+		type = "image" and bid = #{bid}
 	</select>
 
 	<update id="updateHit" parameterType="int">
 		update board
-		set hit = hit +
-		1
+		set hit = hit + 1
 		where bid = #{bid}
 	</update>
 
@@ -104,8 +95,7 @@
 	</select>
 
 	<insert id="likeTrue" parameterType="boardLike">
-		insert into board_like (bid,
-		uid)
+		insert into board_like (bid, uid)
 		values (#{bid}, #{uid})
 	</insert>
 
@@ -115,7 +105,8 @@
 	</delete>
 
 	<update id="updateLike" parameterType="map">
-		update board set like_cnt = like_cnt + #{num} where bid=#{bid}
+		update board set like_cnt = like_cnt + #{num}
+		where bid = #{bid}
 	</update>
 
 	<resultMap type="board" id="baseBoardMap">
@@ -145,5 +136,4 @@
 		<result column="origin_file" property="originFile" />
 		<result column="save_file" property="saveFile" />
 	</resultMap>
-
 </mapper>

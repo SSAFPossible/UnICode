@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/study")
 @Slf4j
 public class StudyBoardController {
+	
 	private static final Logger logger = LoggerFactory.getLogger(NoticeBoardController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
@@ -55,7 +56,6 @@ public class StudyBoardController {
 	public ResponseEntity<String> writeStudyBoard(@RequestPart(value = "studyBoard") StudyBoard studyBoard,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
 			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
-		System.out.println(studyBoard.getUid());
 
 		try {
 			// 파일 업로드
@@ -112,7 +112,9 @@ public class StudyBoardController {
 				studyBoard.setImageList(fileInfos);
 			}
 
+			// 글 작성
 			studyBoardService.writeArticle(studyBoard);
+			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
@@ -125,7 +127,7 @@ public class StudyBoardController {
 	// - category : cs/algo/job
 	// - tag : info/ ques
 	// - uid : 내가 쓴 글 태그 클릭 시 user 정보
-	// - sortLike : 좋아요 순 정렬 여부 true : 좋아요 순 정렬 / false : created_time정렬
+	// - sortLike : 좋아요 순 정렬 여부 true : 좋아요 순 정렬 / false : created_time 정렬
 	@GetMapping
 	public ResponseEntity<List<StudyBoard>> getAllStudyBoard(@RequestBody StudyBoardParam studyBoardParam)
 			throws Exception {
@@ -151,21 +153,10 @@ public class StudyBoardController {
 		}
 		studyBoardParam.setCategorySize(studyBoardParam.getCategory().size());
 		studyBoardParam.setTagSize(studyBoardParam.getTag().size());
-
 		studyBoardParam.setCategoryTag(categoryTag);
+		
 		return new ResponseEntity<List<StudyBoard>>(studyBoardService.getAllStudyBoard(studyBoardParam), HttpStatus.OK);
 	}
-
-//	// 좋아요 증가
-//	@PutMapping("/increaseLike/{bid}")
-//	public ResponseEntity<String> increaseLike(@PathVariable int bid) throws Exception {
-//		// 기존 파일 삭제 & article 삭제
-//		if (studyBoardService.increaseLike(bid)) {
-//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
-//		}
-//	}
 
 	// 하나의 studyBoard 조회
 	@GetMapping("/{bid}")
@@ -178,8 +169,9 @@ public class StudyBoardController {
 	public ResponseEntity<String> modify(@RequestPart(value = "studyBoard") StudyBoard studyBoard,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
 			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
-		// 새로운 파일 업로드
+		
 		try {
+			// 새로운 파일 업로드
 			if (!files[0].getOriginalFilename().equals("")) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
@@ -236,6 +228,7 @@ public class StudyBoardController {
 			// 기존 파일 삭제 & article 수정
 			studyBoardService.deleteFileList(studyBoard.getBid(), filePath, imagePath);
 			studyBoardService.modifyArticle(studyBoard);
+			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
@@ -249,6 +242,7 @@ public class StudyBoardController {
 			// 기존 파일 삭제 & article 삭제
 			studyBoardService.deleteFileList(bid, filePath, imagePath);
 			studyBoardService.deleteArticle(bid);
+			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -269,5 +263,4 @@ public class StudyBoardController {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
-
 }

@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ExhibitBoardRepo {
+	
 	public boolean writeArticle(ExhibitBoard exhibitBoard) throws Exception;
 	
 	public boolean modifyArticle(ExhibitBoard exhibitBoard) throws Exception;

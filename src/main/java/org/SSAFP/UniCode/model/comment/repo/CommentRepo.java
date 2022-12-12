@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CommentRepo {
+	
 	public boolean writeFirstComment(Comment comment) throws Exception;
 	
 	public boolean writeSecondComment(Comment comment) throws Exception;
@@ -16,5 +17,4 @@ public interface CommentRepo {
 	public boolean deleteComment(int cid) throws Exception;
 
 	public List<Comment> getComment(int bid) throws Exception;
-	
 }
