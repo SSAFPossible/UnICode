@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.SSAFP.UniCode.model.board.repo.ProjectRepo">
-	
+
 	<insert id="registProject" parameterType="project">
 		insert into project (bid, url)
 		values(#{bid}, #{url})
@@ -12,94 +12,99 @@
 			select last_insert_id()
 		</selectKey>
 	</insert>
-	
- 	<update id="modifyProject" parameterType="project">
+
+	<update id="modifyProject" parameterType="project">
 		update project
 		<set>
-			<if test = "url != null">
+			<if test="url != null">
 				url = #{url},
 			</if>
 		</set>
 		where pid = #{pid}
 	</update>
-	
-	<select id="getMainImg" parameterType="int" resultMap="baseMainImgMap">
+
+	<select id="getMainImg" parameterType="int"
+		resultMap="baseMainImgMap">
 		select * from project_main_img
 		where pid = #{pid}
 	</select>
-	
- 	<insert id="uploadMainImg" parameterType="project">
+
+	<insert id="uploadMainImg" parameterType="project">
 		insert into project_main_img (pid, save_folder, origin_file, save_file)
 		values (#{pid}, #{mainImg.saveFolder}, #{mainImg.originFile}, #{mainImg.saveFile})
 	</insert>
-	
- 	<delete id="deleteMainImg" parameterType="project">
+
+	<delete id="deleteMainImg" parameterType="project">
 		delete from project_main_img
 		where pid = #{pid}
 	</delete>
-	
+
 	<insert id="registProjectLanguage" parameterType="project">
-		insert into p_develop values
+		insert into p_develop
+		values
 		<foreach collection="language.name" item="name" separator=",">
 			(#{pid}, (select lid from language where name = #{name}))
 		</foreach>
 	</insert>
-	
- 	<delete id="deleteProjectLanguage" parameterType="int">
+
+	<delete id="deleteProjectLanguage" parameterType="int">
 		delete from p_develop
 		where pid = #{pid}
 	</delete>
-	
-	<select id="getProjectLanguage" parameterType="int" resultType="string">
+
+	<select id="getProjectLanguage" parameterType="int"
+		resultType="string">
 		select l.name
 		from p_develop pd
 		join language l on pd.lid = l.lid
 		where pid = #{pid}
 	</select>
-	
+
 	<insert id="registProjectMember" parameterType="project">
-		insert into project_member(pid, uid) values
+		insert into project_member(pid, uid)
+		values
 		<foreach collection="member.uid" item="curUid" separator=",">
 			(#{pid}, #{curUid})
 		</foreach>
 	</insert>
-	
- 	<delete id="deleteProjectMember" parameterType="int">
+
+	<delete id="deleteProjectMember" parameterType="int">
 		delete from project_member
 		where pid = #{pid}
 	</delete>
-	
-	<select id="getProjectMember" parameterType="int" resultType="string">
+
+	<select id="getProjectMember" parameterType="int"
+		resultType="string">
 		select uid from project_member
 		where pid = #{pid}
 	</select>
-	
+
 	<select id="mainImg" resultMap="baseMainImgMap">
 		select * from project_main_img
 		where pid = #{pid}
 	</select>
-	
+
 	<select id="member" resultType="projectMember">
 		select * from project_member
 		where pid = #{pid}
 	</select>
-	
+
 	<resultMap type="project" id="baseProjectMap">
-		<id column="pid" property="pid"/>
-		<result column="bid" property="bid"/>
-		<result column="url" property="url"/>
+		<id column="pid" property="pid" />
+		<result column="bid" property="bid" />
+		<result column="url" property="url" />
 	</resultMap>
-	
+
 	<resultMap type="project" id="baseProjectMainImgMap" extends="baseProjectMap">
-		<association property="mainImg" column="pid" javaType="projectMainImg" select="mainImg"/>
+		<association property="mainImg" column="pid"
+			javaType="projectMainImg" select="mainImg" />
 	</resultMap>
-	
+
 	<resultMap type="projectMainImg" id="baseMainImgMap">
-		<id column="pmid" property="pmid"/>
-		<result column="pid" property="pid"/>
-		<result column="save_folder" property="saveFolder"/>
-		<result column="origin_file" property="originFile"/>
-		<result column="save_file" property="saveFile"/>
+		<id column="pmid" property="pmid" />
+		<result column="pid" property="pid" />
+		<result column="save_folder" property="saveFolder" />
+		<result column="origin_file" property="originFile" />
+		<result column="save_file" property="saveFile" />
 	</resultMap>
-	
 </mapper>

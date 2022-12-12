@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ProjectRepo {
+	
 	public boolean registProject(Project project) throws Exception;
 	
 	public boolean modifyProject(Project project) throws Exception;

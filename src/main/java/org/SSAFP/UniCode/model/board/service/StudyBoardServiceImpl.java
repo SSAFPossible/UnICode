@@ -30,5 +30,4 @@ public class StudyBoardServiceImpl extends BoardServiceImpl {
 		boardRepo.updateHit(bid);
 		return studyBoardRepo.getStudyBoard(bid);
 	}
-
 }

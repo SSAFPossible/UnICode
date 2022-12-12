@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/comment")
 @Slf4j
 public class CommentController {
-	private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 	
+	private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 
@@ -79,9 +79,6 @@ public class CommentController {
 	
 	@GetMapping("/{bid}")
 	public ResponseEntity<List<Comment>> getComment(@PathVariable int bid) throws Exception {
-		logger.info("getArticle - 호출 : " + bid);
-		logger.debug("debug");
 		return new ResponseEntity<List<Comment>>(commentService.getComment(bid),HttpStatus.OK);
 	}
-	
 }

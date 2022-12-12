@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/exhibit")
 @Slf4j
 public class ExhibitBoardController {
+	
 	private static final Logger logger = LoggerFactory.getLogger(ExhibitBoardController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
