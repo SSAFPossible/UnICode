@@ -29,7 +29,7 @@
 	</select>
 
 	<select id="getStudyBoard" parameterType="int" resultMap="baseStudyBoardFileMap">
-		select * from board where bid = #{bid}
+		select * from board where bid = #{bid} and bcid regexp 'algo|job|cs'
 	</select>
 
 	<select id="fileList" resultMap="baseStudyBoardFileInfoMap">
@@ -41,7 +41,15 @@
 		select * from file_info
 		where type = "image" and bid = #{bid}
 	</select>
-
+	
+	<insert id="writeStudyBoard" parameterType="studyBoard">
+		insert into board (uid, bcid, title, content, created_time, updated_time, hit)
+		values(#{uid}, concat(#{category}, "_", #{tag}), #{title}, #{content}, now(), now(), 0)
+		<selectKey resultType="int" keyProperty="bid" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
 	<resultMap type="studyBoard" id="baseStudyBoardMap">
 		<id column="bid" property="bid" />
 		<result column="uid" property="uid" />

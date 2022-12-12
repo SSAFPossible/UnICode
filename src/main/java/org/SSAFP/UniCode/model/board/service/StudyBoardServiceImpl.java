@@ -30,4 +30,20 @@ public class StudyBoardServiceImpl extends BoardServiceImpl {
 		boardRepo.updateHit(bid);
 		return studyBoardRepo.getStudyBoard(bid);
 	}
+
+	@Transactional
+	public boolean writeBoardArticle(StudyBoard studyBoard) throws Exception {
+		boolean write = studyBoardRepo.writeStudyBoard(studyBoard);
+		if (write && studyBoard.getFileList() != null) {
+			write = boardRepo.uploadFileList(studyBoard);
+		}
+		if (write && studyBoard.getImageList() != null) {
+			write = boardRepo.uploadImageList(studyBoard);
+		}
+		if (!write) {
+			throw new Exception();
+		}
+		return true;
+		
+	}
 }

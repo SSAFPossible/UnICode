@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StudyBoard extends Board {
 	private int like;			// 좋아요
+	private String category;
+	private String tag;
 }
