@@ -23,24 +23,23 @@ public class JwtUtil {
 	@Value("${jwt.expmin}")
 	private Long expireMin;
 	
-	public String createAuthToken(String email) {
-		return create(email, "authToken", expireMin);
+	public String createAuthToken(String id) {
+		return create(id, "authToken", expireMin);
 	}
-	
 	
 	public String createRefreshToken() {
 		return create(null, "refreshToken", expireMin * 5);
 	}
 
-	private String create(String email, String subject, Long expireMin) {
+	private String create(String id, String subject, Long expireMin) {
 		final JwtBuilder builder = Jwts.builder();
 		// payload 설정.
 		// 토큰 제목과 유효기간을 설정.
 		builder.setSubject(subject).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * expireMin));
 		
 		// 담고 싶은 정보 설정.
-		if(email != null) {
-			builder.claim("user", email);
+		if(id != null) {
+			builder.claim("user", id);
 		}
 		
 		// signature - secret key를 이용한 암호화.

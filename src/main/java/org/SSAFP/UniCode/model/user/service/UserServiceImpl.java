@@ -20,7 +20,10 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void regist(User user) {
-		uRepo.regist(user);
+		int result = uRepo.regist(user);
+		if (result == 0) {
+			throw new RuntimeException();
+		}
 	}
 	
 	@Override

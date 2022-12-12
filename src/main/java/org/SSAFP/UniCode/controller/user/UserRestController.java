@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserRestController {
 	
+	static public final String SECCESS = "seccess";
+	
 	@Autowired
 	private UserService Service;
 	
@@ -43,10 +46,10 @@ public class UserRestController {
 	 * @return message
 	 */
 	@PostMapping("/regist")
-	public ResponseEntity<?> regist(@RequestBody User user){
+	public ResponseEntity<String> regist(@RequestBody User user){
 		log.info("regist User Info : {}", user);
 		Service.regist(user);
-		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+		return new ResponseEntity<String>(SECCESS, HttpStatus.ACCEPTED);
 	}
 	
 	/**
@@ -59,7 +62,7 @@ public class UserRestController {
 		log.info("login User Info : {}", user);
 		Map<String, Object> resultMap = new HashMap<>();
 		
-		User loginUser = Service.signin(user.getEmail(), user.getPassword());
+		User loginUser = Service.signin(user.getUid(), user.getPassword());
 		resultMap.put("jwt-auth-token", loginUser.getAuthToken());
 		
 		Map<String, Object> info = jwtService.checkAndGetClaims(loginUser.getAuthToken());
@@ -69,7 +72,7 @@ public class UserRestController {
 	
 	
 	/**
-	 * 토큰 재발
+	 * 토큰 재발급
 	 * @param user(email, refreshToken)
 	 * @param res
 	 * @return
@@ -80,9 +83,9 @@ public class UserRestController {
 		
 		jwtService.checkAndGetClaims(user.getRefreashToken());
 		
-		if (user.getRefreashToken().equals(Service.getRefreshToken(user.getEmail()))) {
+		if (user.getRefreashToken().equals(Service.getRefreshToken(user.getUid()))) {
 			
-			String authToken = jwtService.createAuthToken(user.getEmail());
+			String authToken = jwtService.createAuthToken(user.getUid());
 			resultMap.put("jwt-auth-token", authToken);
 			Map<String, Object> info = jwtService.checkAndGetClaims(authToken);
 			resultMap.putAll(info);
@@ -91,10 +94,10 @@ public class UserRestController {
 	}
 	
 	@PostMapping("/logout")
-	public ResponseEntity<Void> logout(@RequestParam String email){
+	public ResponseEntity<String> logout(@RequestParam String email){
 		log.debug("logout : {}", email);
 		Service.logout(email);
-		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+		return new ResponseEntity<String>(SECCESS, HttpStatus.ACCEPTED);
 	}
 	
 	/**
@@ -102,7 +105,7 @@ public class UserRestController {
 	 * @param user
 	 * @return
 	 */
-	@PostMapping("/id")
+	@PostMapping("find/id")
 	public ResponseEntity<?> userIdFind(@RequestBody User user){
 		log.info("login User Info : {}", user);
 		User FindUser = null;
@@ -114,7 +117,7 @@ public class UserRestController {
 	 * @param user
 	 * @return
 	 */
-	@PostMapping("/pwd")
+	@PostMapping("find/pwd")
 	public ResponseEntity<?> userPwdFind(@RequestBody User user){
 		log.info("login User Info : {}", user);
 		User FindUser = null;
@@ -126,8 +129,8 @@ public class UserRestController {
 	 * 사용자 정보
 	 * @return user
 	 */
-	@GetMapping("/info")
-	public ResponseEntity<User> userInfo(String id){
+	@GetMapping("/{id}")
+	public ResponseEntity<User> userInfo(@PathVariable("id") String id){
 		log.debug("info : {}");
 		User user = Service.getInfo(id);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
@@ -139,10 +142,10 @@ public class UserRestController {
 	 * 	@return user
 	 */
 	@PutMapping("/info")
-	public ResponseEntity<?> userUpdate(User user){
+	public ResponseEntity<String> userUpdate(@RequestBody User user){
 		log.info("login User Info : {}", user);
 		Service.putInfo(user);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<String>(SECCESS, HttpStatus.OK);
 	}
 	
 	/**
@@ -150,11 +153,11 @@ public class UserRestController {
 	 * @param String id
 	 * @return
 	 */
-	@DeleteMapping("/info")
-	public ResponseEntity<?> userDelete(String id){
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> userDelete(@PathVariable("id") String id){
 		log.info("login User Info : {}", id);
 		Service.deleteInfo(id);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<String>(SECCESS, HttpStatus.OK);
 	}
 	
 }

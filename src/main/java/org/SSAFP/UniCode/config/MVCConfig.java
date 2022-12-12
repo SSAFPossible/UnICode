@@ -20,7 +20,7 @@ public class MVCConfig implements WebMvcConfigurer {
 	
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(jwtInterceptor).addPathPatterns("/api/**"). // 기본 적용 경로. 
-		excludePathPatterns(Arrays.asList("/api/user/**")); // 적용 제외 경로.
+		excludePathPatterns(Arrays.asList("/api/user/login", "/api/user/regist", "/api/user/refresh")); // 적용 제외 경로.
 	}
 	
 	@Override
