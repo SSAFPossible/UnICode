@@ -1,6 +1,7 @@
 package org.SSAFP.UniCode.model.board.repo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
@@ -35,4 +36,6 @@ public interface ExhibitBoardRepo {
 	public boolean likeTrue(BoardLike boardLike) throws Exception;
 	
 	public boolean likeFalse(BoardLike boardLike) throws Exception;
+	
+	public boolean updateLike(Map<String, Integer> likeInfo) throws Exception;
 }
