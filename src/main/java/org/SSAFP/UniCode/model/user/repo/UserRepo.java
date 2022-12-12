@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserRepo {
 
-	public void regist(User user);
+	public int regist(User user);
 	
-	public User siginin(Map<String, String> map);
+	public int siginin(Map<String, String> map);
 
 	public void logout(String id);
 	
@@ -18,8 +18,9 @@ public interface UserRepo {
 
 	public String getRefreshToken(String id);
 
-	public void userUpdate(User user);
+	public User getInfo(String id);
+	
+	public int putInfo(User user);
 
-	public void userDelete(String id);
-
+	public int deleteInfo(String id);
 }

@@ -13,8 +13,10 @@ public interface UserService {
 	public void saveRefreshToken(String id, String refreshToken);
 
 	public String getRefreshToken(String id);
+	
+	public User getInfo(String id);
 
-	public void userUpdate(User user);
+	public void putInfo(User user);
 
-	public void userDelete(String id);
+	public void deleteInfo(String id);
 }

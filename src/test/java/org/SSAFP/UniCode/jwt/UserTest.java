@@ -7,6 +7,7 @@ import org.SSAFP.UniCode.model.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,19 +42,46 @@ public class UserTest {
 	@Test
 	public void registFailTest() {
 		User user = User.builder().uid("ssafy").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
-		uService.regist(user);
+		assertThrows(DuplicateKeyException.class, () -> {			
+			uService.regist(user);
+		});
 	}
 	
 	@Test
 	public void updateSuccessTest() {
 		User user = User.builder().uid("ssafy").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
-		uService.userUpdate(user);
+		uService.putInfo(user);
 	}
 
 	@Test
 	public void updateFailTest() {
 		User user = User.builder().uid("kyulee").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
-		uService.userUpdate(user);
+		assertThrows(RuntimeException.class, () -> {			
+			uService.putInfo(user);
+		});
 	}
 	
+	@Test
+	public void getSuccessTest() {
+		uService.getInfo("ssafy");
+	}
+	
+	@Test
+	public void getFailTest() {
+		assertThrows(RuntimeException.class, () -> {			
+		uService.getInfo("kyulee");
+		});
+	}
+	
+	@Test
+	public void deleteSuccessTest() {
+		uService.deleteInfo("ssafy");
+	}
+	
+	@Test
+	public void deleteFailTest() {
+		assertThrows(RuntimeException.class, () -> {			
+		uService.deleteInfo("kyulee");
+		});
+	}
 }

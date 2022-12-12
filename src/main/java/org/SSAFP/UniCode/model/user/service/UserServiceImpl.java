@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService{
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("id", id);
 		map.put("password", password);
-		User user = uRepo.siginin(map);
-		if(user != null) {
+		int result = uRepo.siginin(map);
+		if(result != 0) {
 			String authToken = jwtUtil.createAuthToken(id);
 			String refreshToken = jwtUtil.createRefreshToken();
 			
@@ -62,12 +62,28 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void userUpdate(User user) {
-		uRepo.userUpdate(user);
+	public User getInfo(String id) {
+		User user = uRepo.getInfo(id);
+		if (user != null) {
+			return user;
+		}else {
+			throw new RuntimeException();
+		}
+	}
+	
+	@Override
+	public void putInfo(User user) {
+		int result = uRepo.putInfo(user);
+		if (result == 0) {
+			throw new RuntimeException();
+		}
 	}
 
 	@Override
-	public void userDelete(String id) {
-		uRepo.userDelete(id);
+	public void deleteInfo(String id) {
+		int result = uRepo.deleteInfo(id);
+		if (result == 0) {
+			throw new RuntimeException();
+		}
 	}
 }

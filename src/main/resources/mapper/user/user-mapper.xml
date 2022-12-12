@@ -9,15 +9,19 @@
 		insert into user(uid, password, name, email, profile, access_img, created_time) value (#{uid}, #{password}, #{name}, #{email}, #{profile}, #{accessImg}, now())
 	</insert>
 	
-	<select id="siginin" parameterType="hashMap" resultType="user">
-		select * from user where uid = #{id} and password = #{password}
+	<select id="siginin" parameterType="hashMap" resultType="int">
+		select count(*) from user where uid = #{id} and password = #{password}
 	</select>
 	
-	<update id="userUpdate" parameterType="user">
+	<select id="getInfo" parameterType="string" resultType="user">
+		select * from user where uid = #{id}
+	</select>
+	
+	<update id="putInfo" parameterType="user">
 		update user set name = #{name}, email = #{email}, profile = #{profile}, access_img = #{accessImg} where uid = #{uid}
 	</update>
 	
-	<delete id="userDelete" parameterType="string">
+	<delete id="deleteInfo" parameterType="string">
 		delete from user where uid = #{uid}
 	</delete>
 	

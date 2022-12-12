@@ -36,6 +36,7 @@ public class UserRestController {
 	
 	@Autowired
 	private JwtUtil jwtService;
+	
 	/**
 	 * 회원가입.
 	 * @param user ( id : String, password : String ...  )
@@ -44,7 +45,6 @@ public class UserRestController {
 	@PostMapping("/regist")
 	public ResponseEntity<?> regist(@RequestBody User user){
 		log.info("regist User Info : {}", user);
-		Map<String, Object> resultMap = new HashMap<>();
 		Service.regist(user);
 		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
@@ -64,7 +64,7 @@ public class UserRestController {
 		
 		Map<String, Object> info = jwtService.checkAndGetClaims(loginUser.getAuthToken());
 		resultMap.putAll(info);
-		return new ResponseEntity<User>(loginUser, HttpStatus.OK);
+		return new ResponseEntity<User>(loginUser, HttpStatus.ACCEPTED);
 	}
 	
 	
@@ -126,11 +126,11 @@ public class UserRestController {
 	 * 사용자 정보
 	 * @return user
 	 */
-	@GetMapping("/user/info")
-	public ResponseEntity<User> info(){
+	@GetMapping("/info")
+	public ResponseEntity<User> userInfo(String id){
 		log.debug("info : {}");
-		User user = null;
-		return new ResponseEntity<User>(user, HttpStatus.ACCEPTED);
+		User user = Service.getInfo(id);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
 	/**
@@ -141,8 +141,8 @@ public class UserRestController {
 	@PutMapping("/info")
 	public ResponseEntity<?> userUpdate(User user){
 		log.info("login User Info : {}", user);
-		Service.userUpdate(user);
-		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+		Service.putInfo(user);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
 	/**
@@ -153,8 +153,8 @@ public class UserRestController {
 	@DeleteMapping("/info")
 	public ResponseEntity<?> userDelete(String id){
 		log.info("login User Info : {}", id);
-		Service.userDelete(id);
-		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+		Service.deleteInfo(id);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
 }
