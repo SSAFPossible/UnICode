@@ -19,7 +19,7 @@ public class User {
 	private String email;
 	private String github;
 	private String authToken;
-	private String refreashTokens;
+	private String refreashToken;
 	private boolean access;
 	private boolean authority;
 	private int score;

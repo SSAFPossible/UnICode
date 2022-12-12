@@ -26,6 +26,11 @@ public class JwtUtil {
 	public String createAuthToken(String email) {
 		return create(email, "authToken", expireMin);
 	}
+	
+	
+	public String createRefreshToken() {
+		return create(null, "refreshToken", expireMin * 5);
+	}
 
 	private String create(String email, String subject, Long expireMin) {
 		final JwtBuilder builder = Jwts.builder();

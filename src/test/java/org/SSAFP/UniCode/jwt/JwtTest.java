@@ -88,16 +88,17 @@ public class JwtTest {
 	public void testLogin() throws Exception {
 		// given
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("email", "kyoowon95@gmail.com");
-		map.put("pass", "1234");
+		map.put("email", "ssafy");
+		map.put("password", "1234");
 		String content = new ObjectMapper().writeValueAsString(map);
 		
 		//when
-		MockHttpServletRequestBuilder builder = post("/api/user/signin").contentType("application/json").content(content);
+		MockHttpServletRequestBuilder builder = post("/api/user/login").contentType("application/json").content(content);
 		ResultActions action = MockMvc.perform(builder);
 		
+		log.info("action : {}", action);
 		//then
-		action.andExpect(status().is(202)).andExpect(jsonPath("$.sub", equalTo("autoToken"))).andExpect(jsonPath("$.user", equalTo(map.get("email"))));
+		action.andExpect(status().is(200)).andExpect(jsonPath("$.sub", equalTo("authToken"))).andExpect(jsonPath("$.user", equalTo(map.get("uid"))));
 		
 	}
 	
@@ -105,12 +106,12 @@ public class JwtTest {
 	@DisplayName("정상적인 토큰을 받았을 때 원하는 정보를 받을 수 있는지 확인한다.")
 	public void testGetInfoSuccess() throws Exception{
 		// given
-		String token = util.createAuthToken("kyoowon95@gmail.com");
+		String token = util.createAuthToken("ssafy");
 		
 		MockHttpServletRequestBuilder requestBuilder = get("/api/info").header("jwt-auth-token", token);
 		ResultActions action = MockMvc.perform(requestBuilder);
 		
-		action.andExpect(status().is(202)).andExpect(jsonPath("$.info", startsWithIgnoringCase("응답 받았습니다.")));
+		action.andExpect(status().is(200)).andExpect(jsonPath("$.info", startsWithIgnoringCase("응답 받았습니다.")));
 
 	}
 	

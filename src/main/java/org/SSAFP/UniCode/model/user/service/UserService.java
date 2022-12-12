@@ -3,12 +3,18 @@ package org.SSAFP.UniCode.model.user.service;
 import org.SSAFP.UniCode.model.user.dto.User;
 
 public interface UserService {
-	
-	/**
-	 * 
-	 * @param email
-	 * @param password
-	 * @return User (token을 담아서 전달)
-	 */
-	public User signin(String email, String password);
+
+	public void regist(User user);
+
+	public User signin(String id, String password);
+
+	public void logout(String id);
+
+	public void saveRefreshToken(String id, String refreshToken);
+
+	public String getRefreshToken(String id);
+
+	public void userUpdate(User user);
+
+	public void userDelete(String id);
 }
