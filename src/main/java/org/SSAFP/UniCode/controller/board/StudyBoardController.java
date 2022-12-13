@@ -113,10 +113,11 @@ public class StudyBoardController {
 			}
 
 			// 글 작성
-			studyBoardService.writeArticle(studyBoard);
+			studyBoardService.writeBoardArticle(studyBoard);
 			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 
