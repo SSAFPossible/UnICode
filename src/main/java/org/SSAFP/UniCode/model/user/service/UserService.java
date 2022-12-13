@@ -1,5 +1,7 @@
 package org.SSAFP.UniCode.model.user.service;
 
+import java.util.Map;
+
 import org.SSAFP.UniCode.model.user.dto.User;
 
 public interface UserService {

@@ -273,16 +273,13 @@ public class ExhibitBoardController {
 		}
 	}
 
-	@DeleteMapping("/{bid}")
-	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
+	@DeleteMapping
+	public ResponseEntity<String> delete(@RequestBody ExhibitBoard exhibitBoard) throws Exception {
 		try {
-			// ariticle 정보 가져오기
-			ExhibitBoard exhibitBoard = exhibitBoardService.getArticle(bid);
-
 			// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 삭제
 			projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath);
 			exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath);
-			exhibitBoardService.deleteArticle(bid);
+			exhibitBoardService.deleteArticle(exhibitBoard.getBid(), exhibitBoard.getUid());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

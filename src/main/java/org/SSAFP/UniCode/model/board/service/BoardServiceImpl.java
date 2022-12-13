@@ -9,6 +9,8 @@ import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
+import org.SSAFP.UniCode.model.user.repo.UserRepo;
+import org.SSAFP.UniCode.score.Score;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,9 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private BoardRepo boardRepo;
+	
+	@Autowired
+	private UserRepo userRepo;
 
 	@Override
 	@Transactional
@@ -31,8 +36,13 @@ public class BoardServiceImpl implements BoardService {
 		}
 		if (!write) {
 			throw new Exception();
+		} else { // 글 작성 성공 시 점수 증가 
+			Map<String, Object> scoreInfo = new HashMap<>();
+			scoreInfo.put("uid", board.getUid());
+			scoreInfo.put("score", Score.BOARD_WRITE);
+			write = userRepo.updateScore(scoreInfo);
+			return true;
 		}
-		return true;
 	}
 
 	@Override
@@ -53,12 +63,17 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	@Transactional
-	public boolean deleteArticle(int bid) throws Exception {
+	public boolean deleteArticle(int bid, String uid) throws Exception {
 		boolean delete = boardRepo.deleteArticle(bid);
 		if (!delete) {
 			throw new Exception();
+		} else { // 글 삭제 시 점수 차감
+			Map<String, Object> scoreInfo = new HashMap<>();
+			scoreInfo.put("uid", uid);
+			scoreInfo.put("score", -Score.BOARD_WRITE);
+			delete = userRepo.updateScore(scoreInfo);
+			return true;
 		}
-		return true;
 	}
 
 	@Override

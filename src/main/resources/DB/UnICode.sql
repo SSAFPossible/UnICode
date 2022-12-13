@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`user` (
   `created_time` TIMESTAMP NULL,
   `access_img` VARCHAR(45) NULL,
   `access` TINYINT NULL,
-  `score` INT NULL,
+  `score` INT DEFAULT 0,
   `authority` TINYINT NULL,
   `email` VARCHAR(45) NULL,
   `github` VARCHAR(45) NULL,

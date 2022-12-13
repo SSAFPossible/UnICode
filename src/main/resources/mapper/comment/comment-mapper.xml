@@ -21,11 +21,11 @@
 		where cid = #{cid}
 	</update>
 
-	<update id="deleteComment">
+	<delete id="deleteComment">
 		update comment set 
-		deleted = 1, comment = null 
+		deleted = 1, comment = null
 		where cid = #{cid}
-	</update>
+	</delete>
 
 	<select id="getComment" parameterType="int" resultMap="baseSecondCommentMap">
 		select * from comment

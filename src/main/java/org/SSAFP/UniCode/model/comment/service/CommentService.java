@@ -10,5 +10,5 @@ public interface CommentService {
 	
 	public boolean modifyComment(Comment comment) throws Exception;
 
-	public boolean deleteComment(int cid) throws Exception;
+	public boolean deleteComment(int cid, String uid) throws Exception;
 }

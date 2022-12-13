@@ -224,12 +224,12 @@ public class RecruitBoardController {
 		}
 	}
 
-	@DeleteMapping("/{bid}")
-	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
+	@DeleteMapping
+	public ResponseEntity<String> delete(@RequestBody Board board) throws Exception {
 		try {
 			// 기존 파일 삭제 & article 삭제
-			recruitBoardService.deleteFileList(bid, filePath, imagePath);
-			recruitBoardService.deleteArticle(bid);
+			recruitBoardService.deleteFileList(board.getBid(), filePath, imagePath);
+			recruitBoardService.deleteArticle(board.getBid(), board.getUid());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
