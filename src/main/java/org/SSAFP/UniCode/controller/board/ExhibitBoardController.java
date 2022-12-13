@@ -276,10 +276,12 @@ public class ExhibitBoardController {
 	@DeleteMapping
 	public ResponseEntity<String> delete(@RequestBody ExhibitBoard exhibitBoard) throws Exception {
 		try {
+			ExhibitBoard registerdExhibitBoard = exhibitBoardService.getArticle(exhibitBoard.getBid());
+			
 			// 프로젝트 대표 이미지 삭제 & 기존 파일 삭제 & article 삭제
-			projectService.deleteMainImg(exhibitBoard.getProject().getPid(), imagePath);
+			projectService.deleteMainImg(registerdExhibitBoard.getProject().getPid(), imagePath);
 			exhibitBoardService.deleteFileList(exhibitBoard.getBid(), filePath, imagePath);
-			exhibitBoardService.deleteArticle(exhibitBoard.getBid(), exhibitBoard.getUid());
+			exhibitBoardService.deleteArticle(registerdExhibitBoard);
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
