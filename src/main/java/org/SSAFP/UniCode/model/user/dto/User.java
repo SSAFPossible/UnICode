@@ -13,9 +13,7 @@ public class User {
 	private String uid;
 	private String password;
 	private String name;
-	private String profile;
 	private String createdTime;
-	private String accessImg;
 	private String email;
 	private String github;
 	private String authToken;
@@ -23,6 +21,9 @@ public class User {
 	private boolean access;
 	private boolean authority;
 	private int score;
-	
+
+	private UserImg accessImg;
+	private UserImg profile;
+
 	
 }
