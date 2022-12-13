@@ -23,4 +23,6 @@ public interface UserRepo {
 	public int putInfo(User user);
 
 	public int deleteInfo(String id);
+	
+	public boolean updateScore(Map<String, Object> scoreInfo);
 }

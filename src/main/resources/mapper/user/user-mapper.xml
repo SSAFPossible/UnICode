@@ -32,4 +32,8 @@
 	<select id="getRefreshToken" parameterType="string" resultType="string">
 		select refreshToken from user where uid = #{id}
 	</select>
+	
+	<update id="updateScore" parameterType="map">
+		update user set score = score + #{score} where uid = #{uid}
+	</update>
 </mapper>

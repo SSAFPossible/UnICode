@@ -159,5 +159,4 @@ public class UserRestController {
 		Service.deleteInfo(id);
 		return new ResponseEntity<String>(SECCESS, HttpStatus.OK);
 	}
-	
 }

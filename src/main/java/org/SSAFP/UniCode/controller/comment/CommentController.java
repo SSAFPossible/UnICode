@@ -66,10 +66,10 @@ public class CommentController {
 		}
 	}
 
-	@PutMapping("/{cid}")
-	public ResponseEntity<String> deleteComment(@PathVariable int cid) {
+	@DeleteMapping
+	public ResponseEntity<String> deleteComment(@RequestBody Comment comment) {
 		try {
-			commentService.deleteComment(cid);
+			commentService.deleteComment(comment.getCid(), comment.getUid());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

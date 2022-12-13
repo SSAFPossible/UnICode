@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -202,14 +203,13 @@ public class FreeBoardController {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
-
-	@DeleteMapping("/{bid}")
-	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
+	
+	@DeleteMapping
+	public ResponseEntity<String> delete(@RequestBody Board board) throws Exception {
 		try {
 			// 기존 파일 삭제 & article 삭제
-			freeBoardService.deleteFileList(bid, filePath, imagePath);
-			freeBoardService.deleteArticle(bid);
-			
+			freeBoardService.deleteFileList(board.getBid(), filePath, imagePath);
+			freeBoardService.deleteArticle(board.getBid(), board.getUid());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);

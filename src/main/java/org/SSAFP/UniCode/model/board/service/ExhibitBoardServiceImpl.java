@@ -9,7 +9,10 @@ import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoard;
 import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
+import org.SSAFP.UniCode.model.board.dto.ProjectMember;
 import org.SSAFP.UniCode.model.board.repo.ExhibitBoardRepo;
+import org.SSAFP.UniCode.model.user.repo.UserRepo;
+import org.SSAFP.UniCode.score.Score;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,9 @@ public class ExhibitBoardServiceImpl {
 
 	@Autowired
 	ExhibitBoardRepo exhibitBoardRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 	
 	@Transactional
 	public boolean writeArticle(ExhibitBoard exhibitBoard) throws Exception{
@@ -31,8 +37,22 @@ public class ExhibitBoardServiceImpl {
 		}
 		if(!write) {
 			throw new Exception();
+		} else {
+			Map<String, Object> scoreInfo = new HashMap<>();
+			
+			// 글 작성 성공 시 점수 증가
+			scoreInfo.put("uid", exhibitBoard.getUid());
+			scoreInfo.put("score", Score.BOARD_WRITE);
+			write = userRepo.updateScore(scoreInfo);
+			
+			// 프로젝트 참여자 점수 증가
+			scoreInfo.put("score", Score.PROJECT_JOIN);
+			for(String uid : exhibitBoard.getProject().getMember().getUid()) {
+				scoreInfo.put("uid", uid);
+				write = userRepo.updateScore(scoreInfo);	
+			}
+			return true;
 		}
-		return true;
 	}
 
 	@Transactional
@@ -51,11 +71,26 @@ public class ExhibitBoardServiceImpl {
 	}
 
 	@Transactional
-	public boolean deleteArticle(int bid) throws Exception{
-		if(!exhibitBoardRepo.deleteArticle(bid)) {
+	public boolean deleteArticle(int bid, String uid) throws Exception{
+		boolean delete = exhibitBoardRepo.deleteArticle(bid);
+		if(!delete) {
 			throw new Exception();
+		} else {
+//			Map<String, Object> scoreInfo = new HashMap<>();
+//			
+//			// 글 작성 성공 시 점수 증가
+//			scoreInfo.put("uid", uid);
+//			scoreInfo.put("score", -Score.BOARD_WRITE);
+//			delete = userRepo.updateScore(scoreInfo);
+//			
+//			// 프로젝트 참여자 점수 증가
+//			scoreInfo.put("score", -Score.PROJECT_JOIN);
+//			for(String uid : exhibitBoard.getProject().getMember().getUid()) {
+//				scoreInfo.put("uid", uid);
+//				delete = userRepo.updateScore(scoreInfo);	
+//			}
+			return true;
 		}
-		return true;
 	}
 
 	public List<ExhibitBoard> getAllExhibitArticle(ExhibitBoardParam exhibitBoardParam) throws Exception {
