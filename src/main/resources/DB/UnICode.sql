@@ -208,6 +208,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project_main_img` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+
 -- -----------------------------------------------------
 -- Table `UnICode`.`project_member`
 -- -----------------------------------------------------
@@ -228,6 +229,21 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project_member` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`algorithm`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`algorithm` (
+	`aid` INT NOT NULL AUTO_INCREMENT,
+    `site` VARCHAR(45) NOT NULL,
+    `name` VARCHAR(45) NOT NULL,
+    `url` VARCHAR(1000) NOT NULL,
+    `solved` INT DEFAULT 0,
+    PRIMARY KEY (`aid`)
+)
+ENGINE = InnoDB;
+
 
 USE `UnICode` ;
 
