@@ -18,7 +18,9 @@ public interface UserService {
 	
 	public User getInfo(String id);
 
-	public void putInfo(User user);
+	public void modifyInfo(User user);
 
 	public void deleteInfo(String id);
+	
+	public String FindIdByEmail(String email);
 }

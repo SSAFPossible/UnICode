@@ -8,11 +8,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserRepo {
 
-	public int regist(User user);
+	public boolean regist(User user);
 	
 	public int siginin(Map<String, String> map);
-
-	public void logout(String id);
 	
 	public void saveRefreshToken(Map<String, String> map);
 
@@ -20,9 +18,27 @@ public interface UserRepo {
 
 	public User getInfo(String id);
 	
-	public int putInfo(User user);
+	public boolean modifyInfo(User user);
 
-	public int deleteInfo(String id);
+	public boolean deleteInfo(String id);
+
+	public boolean uploadProfile(User user);
+
+	public boolean modifyProfile(User user);
 	
+	public boolean deleteProfile(User user);
+
+	public boolean getProfile(User user);
+
+	public boolean uploadAccessImg(User user);
+
+	public boolean modifyAccessImg(User user);
+	
+	public boolean deleteAccessImg(User user);
+
+	public boolean getAccessImg(User user);
+	
+	public String FindIdByEamil(String email);
+
 	public boolean updateScore(Map<String, Object> scoreInfo);
 }

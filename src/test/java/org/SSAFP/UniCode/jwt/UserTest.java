@@ -22,12 +22,15 @@ public class UserTest {
 	
 	@Test
 	public void loginSuccessTest() {
-		User user = uService.signin("ssafy", "1234");
+		User user = User.builder().uid("ssafy").password("1234").name("이규원").build();
+		uService.regist(user);
+		user = uService.signin("ssafy", "1234");
 		log.info("login : {}", user);
 	}
 	
 	@Test
 	public void loginFailTest() {
+		User user = User.builder().uid("ssafy").password("1234").name("이규원").build();
 		assertThrows(RuntimeException.class, () -> {			
 			uService.signin("ssafy", "1234567890");
 		});
@@ -35,13 +38,13 @@ public class UserTest {
 	
 	@Test
 	public void registSuccessTest() {
-		User user = User.builder().uid("kyulee").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
+		User user = User.builder().uid("kyulee").password("1234").name("이규원").build();
 		uService.regist(user);
 	}
 	
 	@Test
 	public void registFailTest() {
-		User user = User.builder().uid("ssafy").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
+		User user = User.builder().uid("ssafy").password("1234").name("이규원").build();
 		assertThrows(DuplicateKeyException.class, () -> {			
 			uService.regist(user);
 		});
@@ -49,21 +52,25 @@ public class UserTest {
 	
 	@Test
 	public void updateSuccessTest() {
-		User user = User.builder().uid("ssafy").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
-		uService.putInfo(user);
+		User user = User.builder().uid("ssafy").password("1234").name("이규원").build();
+		uService.regist(user);
+		user = User.builder().uid("ssafy").password("123456").name("이규원").build();
+		uService.modifyInfo(user);
 	}
 
 	@Test
 	public void updateFailTest() {
-		User user = User.builder().uid("kyulee").password("1234").name("이규원").profile("img_url").accessImg("access_url").build();
+		User user = User.builder().uid("kyulee").password("1234").name("이규원").build();
 		assertThrows(RuntimeException.class, () -> {			
-			uService.putInfo(user);
+			uService.modifyInfo(user);
 		});
 	}
 	
 	@Test
 	public void getSuccessTest() {
-		uService.getInfo("ssafy");
+		User user = User.builder().uid("kyulee").password("1234").name("이규원").build();
+		uService.regist(user);
+		uService.getInfo("kyulee");
 	}
 	
 	@Test
@@ -75,7 +82,9 @@ public class UserTest {
 	
 	@Test
 	public void deleteSuccessTest() {
-		uService.deleteInfo("ssafy");
+		User user = User.builder().uid("kyulee").password("1234").name("이규원").build();
+		uService.regist(user);
+		uService.deleteInfo("kyulee");
 	}
 	
 	@Test
