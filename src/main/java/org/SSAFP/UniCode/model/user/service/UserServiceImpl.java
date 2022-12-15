@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService{
 			
 			saveRefreshToken(id, refreshToken);
 			
-			return User.builder().uid(id).authToken(authToken).build();
+			return User.builder().uid(id).authToken(authToken).refreashToken(refreshToken).build();
 		} else {
 			throw new RuntimeException();
 		}
