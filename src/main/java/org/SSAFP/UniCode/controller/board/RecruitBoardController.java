@@ -54,7 +54,7 @@ public class RecruitBoardController {
 	@Value("${file.path.upload-images}")
 	String imagePath;
 
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<String> write(@RequestPart(value = "recruitBoard") RecruitBoard recruitBoard,
 			@RequestPart(value = "language") Language language,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
@@ -62,7 +62,7 @@ public class RecruitBoardController {
 
 		try {
 			// 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -89,7 +89,7 @@ public class RecruitBoardController {
 			}
 
 			// 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 
@@ -137,7 +137,7 @@ public class RecruitBoardController {
 		return new ResponseEntity<RecruitBoard>(recruitBoardService.getRecruitArticle(bid), HttpStatus.OK);
 	}
 
-	@GetMapping
+	@PostMapping("/get")
 	public ResponseEntity<List<RecruitBoard>> getRecruitAllArticle(@RequestBody Language language) throws Exception {
 		language.setNameSize(language.getName().size());
 		return new ResponseEntity<List<RecruitBoard>>(recruitBoardService.getRecruitAllArticle(language),
@@ -152,7 +152,7 @@ public class RecruitBoardController {
 
 		try {
 			// 새로운 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -179,7 +179,7 @@ public class RecruitBoardController {
 			}
 
 			// 새로운 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 

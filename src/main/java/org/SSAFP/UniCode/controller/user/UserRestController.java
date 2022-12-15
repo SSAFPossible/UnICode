@@ -2,7 +2,6 @@ package org.SSAFP.UniCode.controller.user;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.SSAFP.UniCode.jwt.JwtUtil;
-import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.user.dto.User;
 import org.SSAFP.UniCode.model.user.dto.UserImg;
 import org.SSAFP.UniCode.model.user.service.UserService;
@@ -31,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.sun.scenario.effect.impl.sw.sse.SSERendererDelegate;
 
 import lombok.extern.slf4j.Slf4j;
 
