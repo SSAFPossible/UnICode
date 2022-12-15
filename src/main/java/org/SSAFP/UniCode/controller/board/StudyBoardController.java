@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.dto.StudyBoard;
@@ -113,10 +114,11 @@ public class StudyBoardController {
 			}
 
 			// 글 작성
-			studyBoardService.writeArticle(studyBoard);
+			studyBoardService.writeBoardArticle(studyBoard);
 			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 
@@ -234,17 +236,14 @@ public class StudyBoardController {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
-
-	// StudyBoard 삭제
-	@DeleteMapping("/{bid}")
-	public ResponseEntity<String> delete(@PathVariable("bid") int bid) throws Exception {
+	
+	@DeleteMapping
+	public ResponseEntity<String> delete(@RequestBody Board board) throws Exception {
 		try {
 			// 기존 파일 삭제 & article 삭제
-			studyBoardService.deleteFileList(bid, filePath, imagePath);
-			studyBoardService.deleteArticle(bid);
-			
+			studyBoardService.deleteFileList(board.getBid(), filePath, imagePath);
+			studyBoardService.deleteArticle(board.getBid(), board.getUid());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
-
 		} catch (Exception e) {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}

@@ -19,20 +19,39 @@ USE `UnICode` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `UnICode`.`user` (
   `uid` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NULL,
-  `name` VARCHAR(45) NULL,
-  `profile` VARCHAR(45) NULL,
-  `created_time` TIMESTAMP NULL,
-  `access_img` VARCHAR(45) NULL,
-  `access` TINYINT NULL,
-  `score` INT NULL,
-  `authority` TINYINT NULL,
-  `email` VARCHAR(45) NULL,
-  `github` VARCHAR(45) NULL,
-  `refreshToken` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NULL DEFAULT NULL,
+  `name` VARCHAR(45) NULL DEFAULT NULL,
+  `created_time` TIMESTAMP NULL DEFAULT NULL,
+  `access` TINYINT NULL DEFAULT NULL,
+  `score` INT NULL DEFAULT '50',
+  `email` VARCHAR(45) NULL DEFAULT NULL,
+  `github` VARCHAR(45) NULL DEFAULT NULL,
+  `refreshToken` VARCHAR(200) NULL DEFAULT NULL,
+  `updated_time` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`uid`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`user_img`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`user_img` (
+  `fid` INT NOT NULL AUTO_INCREMENT,
+  `type` VARCHAR(10) NULL DEFAULT NULL,
+  `save_folder` VARCHAR(45) NULL DEFAULT NULL,
+  `origin_file` VARCHAR(45) NULL DEFAULT NULL,
+  `save_file` VARCHAR(45) NULL DEFAULT NULL,
+  `uid` VARCHAR(45) NULL,
+  PRIMARY KEY (`fid`),
+  INDEX `UID_USER_USER_IMG_idx` (`uid` ASC) VISIBLE,
+  CONSTRAINT `UID_USER_USER_IMG`
+    FOREIGN KEY (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
 -- -----------------------------------------------------
 -- Table `UnICode`.`board`
@@ -208,6 +227,7 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project_main_img` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+
 -- -----------------------------------------------------
 -- Table `UnICode`.`project_member`
 -- -----------------------------------------------------
@@ -228,6 +248,21 @@ CREATE TABLE IF NOT EXISTS `UnICode`.`project_member` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`algorithm`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`algorithm` (
+	`aid` INT NOT NULL AUTO_INCREMENT,
+    `site` VARCHAR(45) NOT NULL,
+    `name` VARCHAR(45) NOT NULL,
+    `url` VARCHAR(1000) NOT NULL,
+    `solved` INT DEFAULT 0,
+    PRIMARY KEY (`aid`)
+)
+ENGINE = InnoDB;
+
 
 USE `UnICode` ;
 

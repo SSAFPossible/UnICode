@@ -14,7 +14,7 @@ public interface BoardService {
 	
 	public boolean modifyArticle(Board board) throws Exception;
 	
-	public boolean deleteArticle(int bid) throws Exception;
+	public boolean deleteArticle(int bid, String uid) throws Exception;
 	
 	public List<Board> getAllArticle(String bcid) throws Exception;
 	

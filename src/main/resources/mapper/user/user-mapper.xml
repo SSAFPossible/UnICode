@@ -102,8 +102,6 @@
 		where email = #{email}
 	</select>
 
-
-
 	<resultMap type="fileInfo" id="baseUserImgMap">
 		<id column="fid" property="fid" />
 		<result column="uid" property="uid" />
@@ -112,4 +110,8 @@
 		<result column="origin_file" property="originFile" />
 		<result column="save_file" property="saveFile" />
 	</resultMap>
+	
+	<update id="updateScore" parameterType="map">
+		update user set score = score + #{score} where uid = #{uid}
+	</update>
 </mapper>

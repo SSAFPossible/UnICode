@@ -39,4 +39,6 @@ public interface UserRepo {
 	public boolean getAccessImg(User user);
 	
 	public String FindIdByEamil(String email);
+
+	public boolean updateScore(Map<String, Object> scoreInfo);
 }

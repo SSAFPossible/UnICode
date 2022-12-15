@@ -8,6 +8,7 @@ import org.SSAFP.UniCode.model.user.dto.User;
 import org.SSAFP.UniCode.model.user.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService{
 			saveRefreshToken(id, refreshToken);
 			
 			return User.builder().uid(id).authToken(authToken).build();
-		}else {
+		} else {
 			throw new RuntimeException();
 		}
 	}
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService{
 		User user = uRepo.getInfo(id);
 		if (user != null) {
 			return user;
-		}else {
+		} else {
 			throw new RuntimeException();
 		}
 	}

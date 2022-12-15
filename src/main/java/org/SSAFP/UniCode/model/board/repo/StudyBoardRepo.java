@@ -11,8 +11,8 @@ public interface StudyBoardRepo {
 	
 	public List<StudyBoard> getAllStudyBoard(StudyBoardParam studyBoardParam) throws Exception;
 
-	public int increaseLike(int bid) throws Exception;
-
 	public StudyBoard getStudyBoard(int bid) throws Exception;
+
+	public boolean writeStudyBoard(StudyBoard studyBoard);
 }
 
