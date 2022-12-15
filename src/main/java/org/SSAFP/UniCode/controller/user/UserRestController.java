@@ -281,4 +281,15 @@ public class UserRestController {
 		Service.deleteInfo(id);
 		return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 	}
+	
+	/**
+	 * 랭킹.
+	 * @return
+	 */
+	
+	@GetMapping("/rank")
+	public ResponseEntity<List<Map<String, Object>>> getRank() {
+		List<Map<String, Object>> rankList = Service.getRankList();
+		return new ResponseEntity<List<Map<String, Object>>>(rankList, HttpStatus.OK);
+	}
 }

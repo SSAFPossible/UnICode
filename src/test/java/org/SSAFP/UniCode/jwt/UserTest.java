@@ -2,6 +2,9 @@ package org.SSAFP.UniCode.jwt;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+import java.util.Map;
+
 import org.SSAFP.UniCode.model.user.dto.User;
 import org.SSAFP.UniCode.model.user.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -92,5 +95,11 @@ public class UserTest {
 		assertThrows(RuntimeException.class, () -> {			
 		uService.deleteInfo("kyulee");
 		});
+	}
+	
+	@Test
+	public void getRankList() {
+		List<Map<String, Object>> rankList = uService.getRankList();
+		log.debug("rank list : {}", rankList);
 	}
 }

@@ -1,5 +1,7 @@
 package org.SSAFP.UniCode.model.user.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.SSAFP.UniCode.model.user.dto.User;
@@ -23,4 +25,6 @@ public interface UserService {
 	public void deleteInfo(String id);
 	
 	public String FindIdByEmail(String email);
+
+	public List<Map<String, Object>> getRankList();
 }

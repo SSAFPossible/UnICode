@@ -1,5 +1,7 @@
 package org.SSAFP.UniCode.model.user.repo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.SSAFP.UniCode.model.user.dto.User;
@@ -41,4 +43,6 @@ public interface UserRepo {
 	public String FindIdByEamil(String email);
 
 	public boolean updateScore(Map<String, Object> scoreInfo);
+
+	public List<Map<String, Object>> getRankList();
 }

@@ -1,6 +1,8 @@
 package org.SSAFP.UniCode.model.user.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.SSAFP.UniCode.jwt.JwtUtil;
@@ -108,5 +110,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String FindIdByEmail(String email) {
 		return uRepo.FindIdByEamil(email);
+	}
+
+	@Override
+	public List<Map<String, Object>> getRankList() {
+		return uRepo.getRankList();
 	}
 }
