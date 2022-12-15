@@ -60,7 +60,7 @@ public class StudyBoardController {
 
 		try {
 			// 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -87,7 +87,7 @@ public class StudyBoardController {
 			}
 
 			// 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 
@@ -130,7 +130,7 @@ public class StudyBoardController {
 	// - tag : info/ ques
 	// - uid : 내가 쓴 글 태그 클릭 시 user 정보
 	// - sortLike : 좋아요 순 정렬 여부 true : 좋아요 순 정렬 / false : created_time 정렬
-	@GetMapping
+	@PostMapping("/get")
 	public ResponseEntity<List<StudyBoard>> getAllStudyBoard(@RequestBody StudyBoardParam studyBoardParam)
 			throws Exception {
 
@@ -163,10 +163,14 @@ public class StudyBoardController {
 	// 하나의 studyBoard 조회
 	@GetMapping("/{bid}")
 	public ResponseEntity<StudyBoard> getStudyBoard(@PathVariable("bid") int bid) throws Exception {
-		return new ResponseEntity<StudyBoard>(studyBoardService.getStudyBoard(bid), HttpStatus.OK);
+		StudyBoard studyBoard = studyBoardService.getStudyBoard(bid);
+		String[] bcid = studyBoard.getBcid().split("_");
+		studyBoard.setCategory(bcid[0]);
+		studyBoard.setTag(bcid[1]);
+		return new ResponseEntity<StudyBoard>(studyBoard, HttpStatus.OK);
 	}
 
-	// 작성한 StudyBoard 수정
+	// 작성한 StudyBoard 수정 
 	@PutMapping
 	public ResponseEntity<String> modify(@RequestPart(value = "studyBoard") StudyBoard studyBoard,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
@@ -174,7 +178,7 @@ public class StudyBoardController {
 		
 		try {
 			// 새로운 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -201,7 +205,7 @@ public class StudyBoardController {
 			}
 
 			// 새로운 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 

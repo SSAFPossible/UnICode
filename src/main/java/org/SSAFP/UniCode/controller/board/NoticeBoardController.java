@@ -48,13 +48,13 @@ public class NoticeBoardController {
 	@Value("${file.path.upload-images}")
 	String imagePath;
 
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<String> write(@RequestPart(value = "noticeBoard") Board noticeBoard,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
 			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 		// 파일 업로드
 		try {
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -81,7 +81,7 @@ public class NoticeBoardController {
 			}
 
 			// 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 
@@ -133,7 +133,7 @@ public class NoticeBoardController {
 
 		try {
 			// 새로운 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -160,7 +160,7 @@ public class NoticeBoardController {
 			}
 
 			// 새로운 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 

@@ -50,7 +50,7 @@
 					)
 			)) and
 		</if>
-		<if test="uid!=''">
+		<if test="uid!=null">
 			bid in (
 				select bid from project
 				where pid in (

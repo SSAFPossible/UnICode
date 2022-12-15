@@ -27,11 +27,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/free")
-@Slf4j
 public class FreeBoardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(FreeBoardController.class);
@@ -48,14 +45,14 @@ public class FreeBoardController {
 	@Value("${file.path.upload-images}")
 	String imagePath;
 
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<String> write(@RequestPart(value = "freeBoard") Board freeBoard,
 			@RequestPart(value = "upfile", required = false) MultipartFile[] files,
 			@RequestPart(value = "upimage", required = false) MultipartFile[] images) throws Exception {
 
 		try {
 			// 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -82,7 +79,7 @@ public class FreeBoardController {
 			}
 
 			// 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 
@@ -141,7 +138,7 @@ public class FreeBoardController {
 			freeBoardService.deleteFileList(freeBoard.getBid(), filePath, imagePath);
 
 			// 새로운 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = filePath + File.separator + today;
 
@@ -168,7 +165,7 @@ public class FreeBoardController {
 			}
 
 			// 새로운 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
 				String saveFolder = imagePath + File.separator + today;
 
@@ -215,4 +212,5 @@ public class FreeBoardController {
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
+
 }

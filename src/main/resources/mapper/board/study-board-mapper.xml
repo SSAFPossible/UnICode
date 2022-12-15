@@ -17,7 +17,7 @@
 				#{ct}
 			</foreach>
 		</if>
-		<if test="uid!=''">
+		<if test="uid!=null">
 			and uid = #{uid}
 		</if>
 		<if test="sortLike==true">

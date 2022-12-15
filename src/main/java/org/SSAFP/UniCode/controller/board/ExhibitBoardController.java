@@ -84,7 +84,7 @@ public class ExhibitBoardController {
 			}
 
 			// 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String saveFolder = filePath + File.separator + today;
 
 				File folder = new File(saveFolder);
@@ -110,7 +110,7 @@ public class ExhibitBoardController {
 			}
 
 			// 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String saveFolder = imagePath + File.separator + today;
 
 				File folder = new File(saveFolder);
@@ -149,7 +149,7 @@ public class ExhibitBoardController {
 		}
 	}
 
-	@GetMapping
+	@PostMapping("/get")
 	public ResponseEntity<List<ExhibitBoard>> getExhibitAllArticle(@RequestBody ExhibitBoardParam exhibitBoardParam)
 			throws Exception {
 		exhibitBoardParam.setLanguageSize(exhibitBoardParam.getLanguage().size());
@@ -205,7 +205,7 @@ public class ExhibitBoardController {
 			}
 
 			// 새로운 파일 업로드
-			if (!files[0].getOriginalFilename().equals("")) {
+			if (files!=null) {
 				String saveFolder = filePath + File.separator + today;
 
 				File folder = new File(saveFolder);
@@ -231,7 +231,7 @@ public class ExhibitBoardController {
 			}
 
 			// 새로운 이미지 업로드
-			if (!images[0].getOriginalFilename().equals("")) {
+			if (images!=null) {
 				String saveFolder = imagePath + File.separator + today;
 
 				File folder = new File(saveFolder);
