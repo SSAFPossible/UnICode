@@ -55,14 +55,14 @@ public class UserTest {
 		User user = User.builder().uid("ssafy").password("1234").name("이규원").build();
 		uService.regist(user);
 		user = User.builder().uid("ssafy").password("123456").name("이규원").build();
-		uService.putInfo(user);
+		uService.modifyInfo(user);
 	}
 
 	@Test
 	public void updateFailTest() {
 		User user = User.builder().uid("kyulee").password("1234").name("이규원").build();
 		assertThrows(RuntimeException.class, () -> {			
-			uService.putInfo(user);
+			uService.modifyInfo(user);
 		});
 	}
 	

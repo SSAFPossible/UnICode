@@ -20,14 +20,22 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void regist(User user) {
-		int result = uRepo.regist(user);
-		if (result == 0) {
+		boolean result = uRepo.regist(user);
+		if (result && user.getProfile() != null) {
+			result = uRepo.uploadProfile(user);
+		}
+		if(result && user.getAccessImg() != null) {
+			result = uRepo.uploadAccessImg(user);
+		}else {
+			result = false;
+		}
+		if (!result) {
 			throw new RuntimeException();
 		}
 	}
 	
 	@Override
-	public User signin(String id, String password) {	
+	public User signin(String id, String password) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("id", id);
 		map.put("password", password);
@@ -46,7 +54,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void logout(String id) {
-		uRepo.logout(id);
+		saveRefreshToken(id, null);
 	}
 	
 	
@@ -75,18 +83,29 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void putInfo(User user) {
-		int result = uRepo.putInfo(user);
-		if (result == 0) {
+	public void modifyInfo(User user) {
+		boolean result = uRepo.modifyInfo(user);
+		if (result && user.getProfile() != null) {
+			result = uRepo.modifyProfile(user);
+		}
+		if(result && user.getAccessImg() != null) {
+			result = uRepo.modifyAccessImg(user);
+		}
+		if (!result) {
 			throw new RuntimeException();
 		}
 	}
 
 	@Override
 	public void deleteInfo(String id) {
-		int result = uRepo.deleteInfo(id);
-		if (result == 0) {
+		boolean result = uRepo.deleteInfo(id);
+		if (!result) {
 			throw new RuntimeException();
 		}
+	}
+
+	@Override
+	public String FindIdByEmail(String email) {
+		return uRepo.FindIdByEamil(email);
 	}
 }

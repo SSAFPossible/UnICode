@@ -14,13 +14,13 @@ public class User {
 	private String password;
 	private String name;
 	private String createdTime;
+	private String updatedTime;
 	private String email;
 	private String github;
+	private int access;
+	private int score;
 	private String authToken;
 	private String refreashToken;
-	private boolean access;
-	private boolean authority;
-	private int score;
 
 	private UserImg accessImg;
 	private UserImg profile;

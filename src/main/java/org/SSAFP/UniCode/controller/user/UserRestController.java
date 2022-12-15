@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sun.scenario.effect.impl.sw.sse.SSERendererDelegate;
+
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -68,7 +70,7 @@ public class UserRestController {
 			// 이미지 업로드
 			if (profileImg != null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
-				String saveFolder = profileImg + File.separator + today;
+				String saveFolder = profilePath + File.separator + today;
 
 				File folder = new File(saveFolder);
 				if (!folder.exists()) {
@@ -90,7 +92,7 @@ public class UserRestController {
 			// 이미지 업로드
 			if (accessImg != null) {
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
-				String saveFolder = accessImg + File.separator + today;
+				String saveFolder = accessImgPath + File.separator + today;
 
 				File folder = new File(saveFolder);
 				if (!folder.exists()) {
@@ -173,10 +175,10 @@ public class UserRestController {
 	 * @return
 	 */
 	@PostMapping("find/id")
-	public ResponseEntity<?> userIdFind(@RequestBody User user) {
-		log.info("login User Info : {}", user);
-		User FindUser = null;
-		return new ResponseEntity<User>(FindUser, HttpStatus.OK);
+	public ResponseEntity<String> userIdFind(@RequestBody String email) {
+		log.info("find id email : {}", email);
+		String uid = Service.FindIdByEmail(email);
+		return new ResponseEntity<String>(uid, HttpStatus.OK);
 	}
 
 	/**
@@ -197,8 +199,8 @@ public class UserRestController {
 	 * 
 	 * @return user
 	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<User> userInfo(@PathVariable("id") String id) {
+	@GetMapping("/{uid}")
+	public ResponseEntity<User> userInfo(@PathVariable("uid") String id) {
 		log.debug("info : {}");
 		User user = Service.getInfo(id);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
@@ -211,10 +213,60 @@ public class UserRestController {
 	 * @return user
 	 */
 	@PutMapping("/info")
-	public ResponseEntity<String> userUpdate(@RequestBody User user) {
-		log.info("login User Info : {}", user);
-		Service.putInfo(user);
-		return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	public ResponseEntity<String> modify(@RequestPart(value = "user") User user,
+			@RequestPart(value = "profile", required = false) MultipartFile profileImg,
+			@RequestPart(value = "accessImg", required = false) MultipartFile accessImg) {
+		try {
+			// 이미지 업로드
+			if (profileImg != null) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = profilePath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				UserImg profile = new UserImg();
+				String originFileName = profileImg.getOriginalFilename();
+				if (!originFileName.isEmpty()) {
+					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
+					profile.setSaveFolder(today);
+					profile.setOriginFile(originFileName);
+					profile.setSaveFile(saveFileName);
+					profileImg.transferTo(new File(folder, saveFileName));
+				}
+				user.setProfile(profile);
+
+			}
+			// 이미지 업로드
+			if (accessImg != null) {
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = accessImgPath + File.separator + today;
+
+				File folder = new File(saveFolder);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+
+				UserImg accImg = new UserImg();
+				String originFileName = accessImg.getOriginalFilename();
+				if (!originFileName.isEmpty()) {
+					String saveFileName = System.nanoTime() + originFileName.substring(originFileName.lastIndexOf('.'));
+					accImg.setSaveFolder(today);
+					accImg.setOriginFile(originFileName);
+					accImg.setSaveFile(saveFileName);
+					accessImg.transferTo(new File(folder, saveFileName));
+				}
+				user.setAccessImg(accImg);
+
+			}
+			log.info("regist User Info : {}", user);
+			Service.modifyInfo(user);
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(FAIL, HttpStatus.NOT_ACCEPTABLE);
+		}
 	}
 
 	/**
@@ -223,8 +275,8 @@ public class UserRestController {
 	 * @param String id
 	 * @return
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> userDelete(@PathVariable("id") String id) {
+	@DeleteMapping("/{uid}")
+	public ResponseEntity<String> delete(@PathVariable("uid") String id) {
 		log.info("login User Info : {}", id);
 		Service.deleteInfo(id);
 		return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
