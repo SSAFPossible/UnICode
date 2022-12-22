@@ -15,6 +15,8 @@ public interface CommentRepo {
 	public boolean modifyComment(Comment comment) throws Exception;
 	
 	public boolean deleteComment(int cid) throws Exception;
+	
+	public boolean dropSecondComment(int bid) throws Exception;
 
 	public List<Comment> getComment(int bid) throws Exception;
 }

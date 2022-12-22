@@ -21,5 +21,7 @@ public interface RecruitBoardRepo {
 
 	public boolean deleteTag(int bid) throws Exception;
 	
+	public List<String> getLanguage(int bid) throws Exception;
+	
 	public List<FileInfo> getFileList(int bid) throws Exception;
 }

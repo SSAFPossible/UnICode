@@ -231,8 +231,12 @@ public class StudyBoardController {
 				studyBoard.setImageList(fileInfos);
 			}
 
-			// 기존 파일 삭제 & article 수정
+			// 기존 파일 삭제 
 			studyBoardService.deleteFileList(studyBoard.getBid(), filePath, imagePath);
+			
+			// article 수정
+			studyBoard.setBcid(studyBoard.getCategory()+"_"+studyBoard.getTag());
+			studyBoardService.updateBcid(studyBoard);
 			studyBoardService.modifyArticle(studyBoard);
 			
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);

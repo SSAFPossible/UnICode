@@ -9,6 +9,7 @@ import org.SSAFP.UniCode.model.board.dto.Board;
 import org.SSAFP.UniCode.model.board.dto.BoardLike;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.BoardRepo;
+import org.SSAFP.UniCode.model.comment.repo.CommentRepo;
 import org.SSAFP.UniCode.model.user.repo.UserRepo;
 import org.SSAFP.UniCode.score.Score;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private BoardRepo boardRepo;
-	
+
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	private CommentRepo commentRepo;
 
 	@Override
 	@Transactional
@@ -64,7 +68,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public boolean deleteArticle(int bid, String uid) throws Exception {
-		boolean delete = boardRepo.deleteArticle(bid);
+		boolean delete = commentRepo.dropSecondComment(bid);
+		if (delete) {
+			delete = boardRepo.deleteArticle(bid);
+		}
 		if (!delete) {
 			throw new Exception();
 		} else { // 글 삭제 시 점수 차감

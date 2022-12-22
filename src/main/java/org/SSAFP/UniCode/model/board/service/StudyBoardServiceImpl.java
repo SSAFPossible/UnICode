@@ -57,4 +57,9 @@ public class StudyBoardServiceImpl extends BoardServiceImpl {
 			return true;
 		}
 	}
+	
+	@Transactional
+	public boolean updateBcid(StudyBoard studyBoard) throws Exception {
+		return studyBoardRepo.updateBcid(studyBoard);
+	}
 }

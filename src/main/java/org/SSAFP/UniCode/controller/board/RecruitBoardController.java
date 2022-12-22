@@ -128,6 +128,7 @@ public class RecruitBoardController {
 			}
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
@@ -220,6 +221,7 @@ public class RecruitBoardController {
 			}
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
@@ -232,6 +234,7 @@ public class RecruitBoardController {
 			recruitBoardService.deleteArticle(board.getBid(), board.getUid());
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}
@@ -246,6 +249,7 @@ public class RecruitBoardController {
 				return new ResponseEntity<String>("false", HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<String>(FAIL, HttpStatus.OK);
 		}
 	}

@@ -14,5 +14,7 @@ public interface StudyBoardRepo {
 	public StudyBoard getStudyBoard(int bid) throws Exception;
 
 	public boolean writeStudyBoard(StudyBoard studyBoard);
+	
+	public boolean updateBcid(StudyBoard studyBoard);
 }
 

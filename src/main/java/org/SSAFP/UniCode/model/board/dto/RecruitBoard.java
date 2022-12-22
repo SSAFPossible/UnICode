@@ -12,4 +12,5 @@ public class RecruitBoard extends Board {
 	private boolean open;			// 인원 모집 중인지 마감되었는지 여부
 	private int maxMember;			// 최대 인원
 	private int likeCnt;			// 좋아요
+	private Language language;		// 프로젝트 언어
 }

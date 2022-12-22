@@ -11,6 +11,7 @@ import org.SSAFP.UniCode.model.board.dto.ExhibitBoardParam;
 import org.SSAFP.UniCode.model.board.dto.FileInfo;
 import org.SSAFP.UniCode.model.board.repo.ExhibitBoardRepo;
 import org.SSAFP.UniCode.model.board.repo.ProjectRepo;
+import org.SSAFP.UniCode.model.comment.repo.CommentRepo;
 import org.SSAFP.UniCode.model.user.repo.UserRepo;
 import org.SSAFP.UniCode.score.Score;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class ExhibitBoardServiceImpl {
 	
 	@Autowired
 	UserRepo userRepo;
+	
+	@Autowired
+	private CommentRepo commentRepo;
 	
 	@Transactional
 	public boolean writeArticle(ExhibitBoard exhibitBoard) throws Exception{
@@ -88,7 +92,10 @@ public class ExhibitBoardServiceImpl {
 			userRepo.updateScore(scoreInfo);
 		}
 		
-		boolean delete = exhibitBoardRepo.deleteArticle(exhibitBoard.getBid());
+		boolean delete = commentRepo.dropSecondComment(exhibitBoard.getBid());
+		if (delete) {
+			delete = exhibitBoardRepo.deleteArticle(exhibitBoard.getBid());
+		}
 		if(!delete) {
 			throw new Exception();
 		}

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.SSAFP.UniCode.model.board.dto.Language;
 import org.SSAFP.UniCode.model.board.dto.RecruitBoard;
+import org.SSAFP.UniCode.model.board.repo.BoardRepo;
 import org.SSAFP.UniCode.model.board.repo.RecruitBoardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,18 @@ public class RecruitBoardServiceImpl extends BoardServiceImpl {
 	
 	@Autowired
 	private RecruitBoardRepo recruitBoardRepo;
+
+	@Autowired
+	private BoardRepo boardRepo;
 	
 	public RecruitBoard getRecruitArticle(int bid) throws Exception {
-		return recruitBoardRepo.getRecruitArticle(bid);
+		boardRepo.updateHit(bid);
+		
+		RecruitBoard recruitBoard = recruitBoardRepo.getRecruitArticle(bid);
+		Language lan = Language.builder().name(recruitBoardRepo.getLanguage(bid)).build();
+		recruitBoard.setLanguage(lan);
+		
+		return recruitBoard;
 	}
 	
 	public List<RecruitBoard> getRecruitAllArticle(Language language) throws Exception {

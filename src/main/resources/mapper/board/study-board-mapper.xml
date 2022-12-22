@@ -50,6 +50,11 @@
 		</selectKey>
 	</insert>
 	
+	<update id="updateBcid" parameterType="studyBoard">
+		update board set bcid = #{bcid}
+		where bid = #{bid}
+	</update>
+	
 	<resultMap type="studyBoard" id="baseStudyBoardMap">
 		<id column="bid" property="bid" />
 		<result column="uid" property="uid" />

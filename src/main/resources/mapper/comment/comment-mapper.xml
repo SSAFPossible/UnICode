@@ -26,7 +26,12 @@
 		deleted = 1, comment = null
 		where cid = #{cid}
 	</delete>
-
+	
+	<delete id="dropSecondComment" parameterType="int">
+		delete from comment
+		where parent_cid is not null and bid = #{bid}
+	</delete>
+	
 	<select id="getComment" parameterType="int" resultMap="baseSecondCommentMap">
 		select * from comment
 		where bid = #{bid} and parent_cid is null 

@@ -11,6 +11,13 @@
 		select * from board
 		where bid = #{bid}
 	</select>
+	
+	<select id="getLanguage" parameterType="int" resultType="string">
+		select l.name
+		from b_develop bd
+		join language l on bd.lid = l.lid
+		where bid = #{bid}
+	</select>
 
 	<select id="getRecruitAllArticle" parameterType="language"
 		resultMap="baseRecruitBoardMap">
