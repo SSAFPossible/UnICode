@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/SSAFPossible/UnICode
+REPOSITORY=/home/ec2-user/ssafpossible/unicode
 
 cd $REPOSITORY
 
@@ -8,5 +8,5 @@ cd $REPOSITORY
 # docker rm UnICode
 # docker rmi UnICode
 
-docker build -t UnICode .
-docker run -d -p 8080:8080 —name UnICode UnICode
+docker build -t unicode .
+docker run -d -p 8080:8080 —name unicode unicode
