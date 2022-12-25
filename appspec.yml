@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/SSAFPossible/UnICode
+    destination: /home/ec2-user/ssafpossible/unicode
     overwrite: yes
 hooks:
   ApplicationStart:
