@@ -9,4 +9,4 @@ cd $REPOSITORY
 # docker rmi UnICode
 
 docker build -t unicode .
-docker run -d -p 8080:8080 —name unicode unicode
+docker run -d 8080:8080 —name unicode unicode
