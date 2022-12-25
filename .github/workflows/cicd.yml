@@ -40,3 +40,10 @@ jobs:
         --region ap-northeast-2 
         ./deploy/build.zip 
         s3://unicode-s3/deploy/build.zip
+      
+    - name: codedeploy
+      run: aws deploy create-deployment 
+        --application-name UnICode 
+        --deployment-config-name CodeDeployDefault.OneAtATime 
+        --deployment-group-name UnICode-codedeploy 
+        --s3-location bucket=unicode-s3,bundleType=zip,key=deploy/build.zip
