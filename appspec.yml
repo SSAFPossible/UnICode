@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/SSAFPossible/UnICode
+    overwrite: yes
+hooks:
+  ApplicationStart:
+    - location: deploy.sh
+      runas: ec2-user
