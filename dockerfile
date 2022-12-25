@@ -1,4 +1,4 @@
 FROM openjdk:8-jdk-alpine
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+VOLUME /tmp
+ADD simple-1.0-SNAPSHOT.jar simple-1.0-SNAPSHOT.jar 
+ENTRYPOINT ["java","-jar","/simple-1.0-SNAPSHOT.jar"]
