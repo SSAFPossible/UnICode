@@ -1,3 +1,10 @@
+#!/bin/bash
+# clone git
+git clone https://github.com/SSAFPossible/UnICode.git
+
+# move
+cd UnICode
+
 # build
 mvn package
 
