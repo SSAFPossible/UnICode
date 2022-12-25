@@ -29,7 +29,7 @@ jobs:
 
     # 압축파일 형태로 전달
     - name: Make zip file
-      run: zip -r -qq -j ./build.zip ./*
+      run: zip -r ./deploy/build.zip ./*
 
     # S3 Bucket으로 copy
     - name: Deliver to AWS S3
