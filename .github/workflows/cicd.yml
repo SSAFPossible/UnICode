@@ -40,4 +40,5 @@ jobs:
         aws s3 cp \
         --region ap-northeast-2 \
         --acl private \ 
-        ./build.zip s3://unicode-s3/
+        ./deploy/build.zip 
+        s3://unicode-s3/deploy/build.zip
