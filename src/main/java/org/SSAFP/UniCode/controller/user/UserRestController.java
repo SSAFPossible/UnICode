@@ -170,10 +170,10 @@ public class UserRestController {
 	 * @param user
 	 * @return
 	 */
-	@PostMapping("find/id")
-	public ResponseEntity<String> userIdFind(@RequestBody String email) {
+	@PostMapping("/find/id")
+	public ResponseEntity<String> userIdFind(@RequestBody Map<String,String> email) {
 		log.info("find id email : {}", email);
-		String uid = Service.FindIdByEmail(email);
+		String uid = Service.FindIdByEmail(email.get("email"));
 		return new ResponseEntity<String>(uid, HttpStatus.OK);
 	}
 
