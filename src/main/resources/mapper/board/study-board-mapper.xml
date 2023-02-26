@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.StudyBoardRepo">
+
+	<select id="getAllStudyBoard" parameterType="studyBoardParam" resultType="studyBoard">
+		select * from board
+		where
+		<if test="categorySize==0 and tagSize==0">
+			bcid regexp 'algo|job|cs'
+		</if>
+		<if test="categorySize!=0 or tagSize!=0">
+			bcid in
+			<foreach item="ct" collection="categoryTag" open="(" close=")" separator=",">
+				#{ct}
+			</foreach>
+		</if>
+		<if test="uid!=null">
+			and uid = #{uid}
+		</if>
+		<if test="sortLike==true">
+			order by like_cnt desc
+		</if>
+		<if test="sortLike!=true">
+			order by created_time
+		</if>
+	</select>
+
+	<select id="getStudyBoard" parameterType="int" resultMap="baseStudyBoardFileMap">
+		select * from board where bid = #{bid} and bcid regexp 'algo|job|cs'
+	</select>
+
+	<select id="fileList" resultMap="baseStudyBoardFileInfoMap">
+		select * from file_info
+		where type = "file" and bid = #{bid}
+	</select>
+
+	<select id="imageList" resultMap="baseStudyBoardFileInfoMap">
+		select * from file_info
+		where type = "image" and bid = #{bid}
+	</select>
+	
+	<insert id="writeStudyBoard" parameterType="studyBoard">
+		insert into board (uid, bcid, title, content, created_time, updated_time, hit)
+		values(#{uid}, concat(#{category}, "_", #{tag}), #{title}, #{content}, now(), now(), 0)
+		<selectKey resultType="int" keyProperty="bid" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<update id="updateBcid" parameterType="studyBoard">
+		update board set bcid = #{bcid}
+		where bid = #{bid}
+	</update>
+	
+	<resultMap type="studyBoard" id="baseStudyBoardMap">
+		<id column="bid" property="bid" />
+		<result column="uid" property="uid" />
+		<result column="bcid" property="bcid" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="hit" property="hit" />
+		<result column="created_time" property="createdTime"  />
+		<result column="updated_time" property="updatedTime" />
+		<result column="like_cnt" property="like" /> 
+	</resultMap>
+
+	<resultMap type="studyBoard" id="baseStudyBoardFileMap" extends="baseStudyBoardMap">
+		<collection property="fileList" column="bid"
+			javaType="list" ofType="fileInfo" select="fileList" />
+		<collection property="imageList" column="bid"
+			javaType="list" ofType="fileInfo" select="imageList" />
+	</resultMap>
+
+	<resultMap type="fileInfo" id="baseStudyBoardFileInfoMap">
+		<id column="fid" property="fid" />
+		<result column="bid" property="bid" />
+		<result column="type" property="type" />
+		<result column="save_folder" property="saveFolder" />
+		<result column="origin_file" property="originFile" />
+		<result column="save_file" property="saveFile" />
+	</resultMap>
+</mapper>

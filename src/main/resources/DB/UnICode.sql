@@ -5,80 +5,113 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema UnICode
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema UnICode
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `UnICode` DEFAULT CHARACTER SET utf8 ;
+USE `UnICode` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`User`
+-- Table `UnICode`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`User` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`user` (
   `uid` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NULL,
-  `name` VARCHAR(45) NULL,
-  `profile` VARCHAR(45) NULL,
-  `created_time` TIMESTAMP NULL,
-  `access_img` VARCHAR(45) NULL,
-  `access` TINYINT NULL,
-  `score` INT NULL,
-  `authority` TINYINT NULL,
-  `email` VARCHAR(45) NULL,
-  `github` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NULL DEFAULT NULL,
+  `name` VARCHAR(45) NULL DEFAULT NULL,
+  `created_time` TIMESTAMP NULL DEFAULT NULL,
+  `access` TINYINT NULL DEFAULT NULL,
+  `score` INT NULL DEFAULT '50',
+  `email` VARCHAR(45) NULL DEFAULT NULL,
+  `github` VARCHAR(45) NULL DEFAULT NULL,
+  `refreshToken` VARCHAR(200) NULL DEFAULT NULL,
+  `updated_time` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`uid`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Board`
+-- Table `UnICode`.`user_img`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Board` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`user_img` (
+  `fid` INT NOT NULL AUTO_INCREMENT,
+  `type` VARCHAR(10) NULL DEFAULT NULL,
+  `save_folder` VARCHAR(45) NULL DEFAULT NULL,
+  `origin_file` VARCHAR(45) NULL DEFAULT NULL,
+  `save_file` VARCHAR(45) NULL DEFAULT NULL,
+  `uid` VARCHAR(45) NULL,
+  PRIMARY KEY (`fid`),
+  INDEX `UID_USER_USER_IMG_idx` (`uid` ASC) VISIBLE,
+  CONSTRAINT `UID_USER_USER_IMG`
+    FOREIGN KEY (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`board`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`board` (
   `bid` INT NOT NULL AUTO_INCREMENT,
+  `bcid` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(1000) NULL,
   `created_time` TIMESTAMP NOT NULL,
   `updated_time` TIMESTAMP NULL,
   `uid` VARCHAR(45) NOT NULL,
-  `main_img_url` VARCHAR(100) NULL,
   `hit` INT NULL DEFAULT 0,
-  `like` INT NULL DEFAULT 0,
+  `like_cnt` INT NULL DEFAULT 0,
   `open` TINYINT NULL,
   `max_member` INT NULL,
   PRIMARY KEY (`bid`),
-  INDEX `USER_BOARD_id_wirtre_idx` (`uid` ASC) VISIBLE,
-  CONSTRAINT `USER_BOARD_ID_WRITER`
+  INDEX `user_board_id_wirtre_idx` (`uid` ASC) VISIBLE,
+  CONSTRAINT `user_board_ID_WRITER`
     FOREIGN KEY (`uid`)
-    REFERENCES `mydb`.`User` (`uid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `UnICode`.`user` (`uid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Project`
+-- Table `UnICode`.`board_like`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Project` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`board_like` (
+  `bid` INT NOT NULL,
+  `uid` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`bid`, `uid`),
+  FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (`uid`) REFERENCES `UnICode`.`user` (`uid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`project`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`project` (
   `pid` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(45) NOT NULL,
-  `content` VARCHAR(1000) NULL,
-  `created_time` TIMESTAMP NOT NULL,
-  `updated_time` TIMESTAMP NULL,
+  `bid` INT NOT NULL,
   `url` VARCHAR(45) NULL,
-  `hit` INT NULL DEFAULT 0,
-  `like` INT NULL DEFAULT 0,
-  `img` VARCHAR(45) NULL,
-  PRIMARY KEY (`pid`))
+  PRIMARY KEY (`pid`),
+  FOREIGN KEY (`bid`) REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`language`
+-- Table `UnICode`.`language`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`language` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`language` (
   `lid` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`lid`))
@@ -86,149 +119,163 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`B_Develop`
+-- Table `UnICode`.`b_develop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`B_Develop` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`b_develop` (
   `bid` INT NOT NULL,
   `lid` INT NOT NULL,
   PRIMARY KEY (`bid`, `lid`),
   INDEX `LANGUAGE_DEVELOP_LID_idx` (`lid` ASC) VISIBLE,
-  CONSTRAINT `BOARD_DEVELOP_BID`
+  CONSTRAINT `board_DEVELOP_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `mydb`.`Board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `LANGUAGE_DEVELOP_LID`
     FOREIGN KEY (`lid`)
-    REFERENCES `mydb`.`language` (`lid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `UnICode`.`language` (`lid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`comment`
+-- Table `UnICode`.`comment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`comment` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`comment` (
   `cid` INT NOT NULL AUTO_INCREMENT,
   `comment` VARCHAR(45) NULL,
   `bid` INT NULL,
-  `class` INT NULL,
   `created_time` TIMESTAMP NULL,
-  `parent_cid` INT NULL,
-  `id` VARCHAR(45) NULL,
+  `updated_time` TIMESTAMP NULL,
+  `parent_cid` INT DEFAULT NULL,
+  `uid` VARCHAR(45) NULL,
+  `deleted` TINYINT DEFAULT 0,
   PRIMARY KEY (`cid`),
   INDEX `GROUP_NUM_CID_idx` (`parent_cid` ASC) VISIBLE,
-  INDEX `BOARD_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
-  INDEX `USER_COMMENT_ID_idx` (`id` ASC) VISIBLE,
-  CONSTRAINT `GROUP_NUM_CID`
+  INDEX `board_COMMENT_BID_idx` (`bid` ASC) VISIBLE,
+  INDEX `user_COMMENT_ID_idx` (`uid` ASC) VISIBLE,
+  CONSTRAINT `comment_COMMENT_PARENT_CID`
     FOREIGN KEY (`parent_cid`)
-    REFERENCES `mydb`.`comment` (`cid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `BOARD_COMMENT_BID`
+    REFERENCES `UnICode`.`comment` (`cid`),
+  CONSTRAINT `board_COMMENT_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `mydb`.`Board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `USER_COMMENT_ID`
-    FOREIGN KEY (`id`)
-    REFERENCES `mydb`.`User` (`uid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `user_COMMENT_UID`
+    FOREIGN KEY (`uid`)
+    REFERENCES `UnICode`.`user` (`uid`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Board_Category`
+-- Table `UnICode`.`p_develop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Board_Category` (
-  `bid` INT NOT NULL,
-  `main_class` INT NULL,
-  `middle_class` INT NULL,
-  PRIMARY KEY (`bid`),
-  CONSTRAINT `BOARD_CATEGORY_BID`
-    FOREIGN KEY (`bid`)
-    REFERENCES `mydb`.`Board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`P_Develop`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`P_Develop` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`p_develop` (
   `pid` INT NOT NULL,
   `lid` INT NOT NULL,
   PRIMARY KEY (`lid`, `pid`),
   INDEX `LANGUAGE_DEVELOP_LID_idx` (`lid` ASC) VISIBLE,
-  INDEX `PROJECT_DEVELOP_PID_idx` (`pid` ASC) VISIBLE,
-  CONSTRAINT `PROJECT_DEVELOP_PID`
+  INDEX `project_DEVELOP_PID_idx` (`pid` ASC) VISIBLE,
+  CONSTRAINT `project_DEVELOP_PID`
     FOREIGN KEY (`pid`)
-    REFERENCES `mydb`.`Project` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `UnICode`.`project` (`pid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `LANGUAGE_DEVELOP_LID0`
     FOREIGN KEY (`lid`)
-    REFERENCES `mydb`.`language` (`lid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `UnICode`.`language` (`lid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`file_info`
+-- Table `UnICode`.`file_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`file_info` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`file_info` (
   `fid` INT NOT NULL AUTO_INCREMENT,
   `bid` INT NULL,
+  `type` VARCHAR(10) NULL,
   `save_folder` VARCHAR(45) NULL,
   `origin_file` VARCHAR(45) NULL,
   `save_file` VARCHAR(45) NULL,
   PRIMARY KEY (`fid`),
-  INDEX `FILE_BOARD_BID_idx` (`bid` ASC) VISIBLE,
-  CONSTRAINT `FILE_BOARD_BID`
+  INDEX `FILE_board_BID_idx` (`bid` ASC) VISIBLE,
+  CONSTRAINT `FILE_board_BID`
     FOREIGN KEY (`bid`)
-    REFERENCES `mydb`.`Board` (`bid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `UnICode`.`board` (`bid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`ProjectMember`
+-- Table `UnICode`.`file_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`ProjectMember` (
+CREATE TABLE IF NOT EXISTS `UnICode`.`project_main_img` (
+  `pmid` INT NOT NULL AUTO_INCREMENT,
+  `pid` INT NULL,
+  `save_folder` VARCHAR(45) NULL,
+  `origin_file` VARCHAR(45) NULL,
+  `save_file` VARCHAR(45) NULL,
+  PRIMARY KEY (`pmid`),
+    FOREIGN KEY (`pid`)
+    REFERENCES `UnICode`.`project` (`pid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UnICode`.`project_member`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UnICode`.`project_member` (
   `uid` VARCHAR(45) NOT NULL,
   `pid` INT NOT NULL,
   PRIMARY KEY (`uid`, `pid`),
-  INDEX `fk_ProjectMember_User1_idx` (`uid` ASC) VISIBLE,
-  INDEX `fk_ProjectMember_Project1_idx` (`pid` ASC) VISIBLE,
-  CONSTRAINT `fk_ProjectMember_User1`
+  INDEX `fk_project_member_user1_idx` (`uid` ASC) VISIBLE,
+  INDEX `fk_project_member_project1_idx` (`pid` ASC) VISIBLE,
+  CONSTRAINT `fk_project_member_user1`
     FOREIGN KEY (`uid`)
-    REFERENCES `mydb`.`User` (`uid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ProjectMember_Project1`
+    REFERENCES `UnICode`.`user` (`uid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_project_member_project1`
     FOREIGN KEY (`pid`)
-    REFERENCES `mydb`.`Project` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `UnICode`.`project` (`pid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-USE `mydb` ;
 
 -- -----------------------------------------------------
--- Placeholder table for view `mydb`.`view1`
+-- Table `UnICode`.`algorithm`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`view1` (`id` INT);
+CREATE TABLE IF NOT EXISTS `UnICode`.`algorithm` (
+	`aid` INT NOT NULL AUTO_INCREMENT,
+    `site` VARCHAR(45) NOT NULL,
+    `name` VARCHAR(45) NOT NULL,
+    `url` VARCHAR(1000) NOT NULL,
+    `solved` INT DEFAULT 0,
+    PRIMARY KEY (`aid`)
+)
+ENGINE = InnoDB;
+
+
+USE `UnICode` ;
 
 -- -----------------------------------------------------
--- View `mydb`.`view1`
+-- Placeholder table for view `UnICode`.`view1`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`view1`;
-USE `mydb`;
+CREATE TABLE IF NOT EXISTS `UnICode`.`view1` (`id` INT);
+
+-- -----------------------------------------------------
+-- View `UnICode`.`view1`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `UnICode`.`view1`;
+USE `UnICode`;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

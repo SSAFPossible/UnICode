@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.SSAFP.UniCode.model.algorithm.repo.AlgoRepo">
+
+	<insert id="registAlgo" parameterType="algo">
+		insert into algorithm (site, name, url)
+		values(#{site}, #{name}, #{url})
+	</insert>
+	
+	<update id="modifyAlgo" parameterType="algo">
+		update algorithm
+		<set>
+			<if test="site != null">
+				site = #{site},
+			</if>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="url != null">
+				url = #{url},
+			</if>
+		</set>
+		where aid = #{aid}
+	</update>
+	
+	<delete id="deleteAlgo" parameterType="int">
+		delete from algorithm
+		where aid = #{aid}
+	</delete>
+	
+	<select id="getAllAlgo" parameterType="algoParam" resultType="algo">
+		select * from algorithm
+		where solved = #{solved}
+	</select>
+	
+	<select id="getAlgo" parameterType="int" resultType="algo">
+		select * from algorithm
+		where aid = #{aid}
+	</select>
+	
+	<select id="pickAlgo" resultType="algo">
+		select * from algorithm
+		where solved = 0
+		order by rand() limit 3
+	</select>
+	
+	<update id="updateSolved" parameterType="map">
+		update algorithm
+		set solved = #{solved}
+		where aid = #{aid}
+	</update>
+</mapper>
