@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.SSAFP.UniCode.model.board.repo.FileInfoRepo">
+
+	<resultMap type="fileInfo" id="baseFileInfoMap">
+		<id column="fid" property="fid"/>
+		<result column="bid" property="bid"/>
+		<result column="save_folder" property="saveFolder"/>
+		<result column="origin_file" property="originFile"/>
+		<result column="save_file" property="saveFile"/>
+	</resultMap>
+
+</mapper>

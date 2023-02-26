@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.SSAFP.UniCode.model.user.repo.UserRepo">
+
+	<insert id="regist">
+		insert into user(uid, password, name, email,
+		created_time)
+		value (#{uid}, #{password}, #{name}, #{email}, now())
+	</insert>
+
+	<select id="siginin" parameterType="hashMap" resultType="int">
+		select
+		count(*) from user where uid = #{id} and password = #{password}
+	</select>
+
+	<select id="getInfo" parameterType="string" resultType="user">
+		select *
+		from user where uid = #{id}
+	</select>
+
+	<update id="modifyInfo" parameterType="user">
+		update user
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="email != null">
+				email = #{email},
+			</if>
+			<if test="password != null">
+				password = #{password},
+			</if>
+			<if test="github != null">
+				github = #{github},
+			</if>
+			updated_time = now()
+		</set>
+		where uid = #{uid}
+	</update>
+
+	<delete id="deleteInfo" parameterType="string">
+		delete from user where uid
+		= #{uid}
+	</delete>
+
+	<update id="saveRefreshToken" parameterType="hashMap">
+		update user set
+		refreshToken = #{refreshToken} where uid = #{id}
+	</update>
+
+	<select id="getRefreshToken" parameterType="string"
+		resultType="string">
+		select refreshToken from user where uid = #{id}
+	</select>
+
+	<insert id="uploadProfile" parameterType="user">
+		insert into user_img
+		(uid, type, save_folder, origin_file, save_file)
+		values (#{uid},
+		"profile", #{profile.saveFolder}, #{profile.originFile},
+		#{profile.saveFile})
+	</insert>
+
+	<update id="modifyProfile" parameterType="user">
+		update user_img set
+		save_folder = #{profile.saveFolder},
+		origin_file =
+		#{profile.originFile}, save_file = #{profile.saveFile}
+		where uid =
+		#{uid} and type = "profile"
+	</update>
+
+	<delete id="deleteProfile">
+		delete from user_img where uid = #{uid} and type =
+		"profile"
+	</delete>
+
+	<select id="getProfile" resultMap="baseUserImgMap">
+		select * from user_img where
+		uid = #{uid} and type = "profile"
+	</select>
+
+	<insert id="uploadAccessImg" parameterType="user">
+		insert into user_img
+		(uid, type, save_folder, origin_file, save_file)
+		values (#{uid},
+		"accessImg", #{accessImg.saveFolder}, #{accessImg.originFile},
+		#{accessImg.saveFile})
+	</insert>
+
+	<update id="modifyAccessImg" parameterType="user">
+		update user_img set
+		save_folder = #{accessImg.saveFolder},
+		origin_file =
+		#{accessImg.originFile}, save_file = #{accessImg.saveFile}
+		where uid
+		=
+		#{uid} and type = "accessImg"
+	</update>
+
+	<delete id="deleteAccessImg">
+		delete from user_img where uid = #{uid} and type =
+		"AccessImg"
+	</delete>
+
+	<select id="getAccessImg" resultMap="baseUserImgMap">
+		select * from user_img where
+		uid = #{uid} and type = "accessImg"
+	</select>
+
+	<select id="FindIdByEamil" resultType="string">
+		select uid from user
+		where
+		email = #{email}
+	</select>
+
+	<update id="updateScore" parameterType="map">
+		update user set score =
+		score + #{score} where uid = #{uid}
+	</update>
+
+	<select id="getRankList" resultType="map">
+		select uid, score from user order by score desc limit 0, 5
+	</select>
+
+	<resultMap type="fileInfo" id="baseUserImgMap">
+		<id column="fid" property="fid" />
+		<result column="uid" property="uid" />
+		<result column="type" property="type" />
+		<result column="save_folder" property="saveFolder" />
+		<result column="origin_file" property="originFile" />
+		<result column="save_file" property="saveFile" />
+	</resultMap>
+
+</mapper>
