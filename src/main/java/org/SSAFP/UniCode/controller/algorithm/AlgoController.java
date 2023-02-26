@@ -67,7 +67,7 @@ public class AlgoController {
 		}
 	}
 	
-	@GetMapping
+	@PostMapping("/get")
 	public ResponseEntity<?> getAllAlgo(@RequestBody AlgoParam algoParam) throws Exception {
 		try {
 			return new ResponseEntity<List<Algo>>(algoService.getAllAlgo(algoParam), HttpStatus.OK);

@@ -74,13 +74,15 @@
 
 <br>
 
-<!-- 
+### DB 설계
 
-### 일정
+![db](https://user-images.githubusercontent.com/59721896/200318570-72c9b09a-434d-4104-bd87-f8f90ca591e5.png)
 
 <br>
 
-### DB 설계
+<!-- 
+
+### 일정
 
 <br>
 

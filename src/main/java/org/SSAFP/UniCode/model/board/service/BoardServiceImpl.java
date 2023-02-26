@@ -69,9 +69,7 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public boolean deleteArticle(int bid, String uid) throws Exception {
 		boolean delete = commentRepo.dropSecondComment(bid);
-		if (delete) {
-			delete = boardRepo.deleteArticle(bid);
-		}
+		delete = boardRepo.deleteArticle(bid);
 		if (!delete) {
 			throw new Exception();
 		} else { // 글 삭제 시 점수 차감
