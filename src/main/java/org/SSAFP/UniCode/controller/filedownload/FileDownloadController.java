@@ -34,13 +34,9 @@ public class FileDownloadController {
     public ResponseEntity<InputStreamResource> getTermsConditions(@PathVariable("name") String name, @PathVariable("folder") String folder) throws IOException {
     	Path path = Paths.get(filePath + "/" + folder + "/" + name);
 		String contentType = Files.probeContentType(path);
-
 		HttpHeaders headers = new HttpHeaders();
-		
 		headers.setContentDisposition(ContentDisposition.builder("attachment").filename(name, StandardCharsets.UTF_8).build());
-		
 		headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-		
 		InputStreamResource resource =  new InputStreamResource(Files.newInputStream(path));
 		return new ResponseEntity<InputStreamResource>(resource, headers, HttpStatus.OK);
     }
